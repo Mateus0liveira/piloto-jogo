@@ -1,18 +1,3 @@
-Entendido! Vamos atualizar o `script.js` para que os novos botões da barra de navegação (`Amigos`, `Casal`, `Picante/Hot`) direcionem corretamente para a tela de configuração do jogo (`configScreen`) já com a categoria predefinida.
-
-### Panorama Geral da Solução:
-
-1.  **Novas Referências DOM:** Precisamos atualizar as variáveis `const` para os novos IDs dos botões no `index.html`.
-2.  **Lógica dos Event Listeners:**
-    * Os botões "Amigos", "Casal" e "Picante/Hot" agora precisarão:
-        * Definir a variável global `selectedCategoryName` para a categoria correspondente.
-        * Chamar `showScreen('configScreen')`.
-        * Lidar com o estado "locked" das categorias.
-3.  **Atualizar `showScreen` para a barra de navegação:** A lógica de ativação da navegação inferior precisa ser ajustada para os novos IDs e para ativar o botão "Início" sempre que estiver na `categorySelectionScreen`, e ativar os botões de categoria quando o jogo estiver sendo configurado ou jogado com aquela categoria.
-
-### Modificação do `script.js`
-
-```javascript
 // =================================================================
 // =================== ESTADO GLOBAL E VARIÁVEIS ===================
 // =================================================================
