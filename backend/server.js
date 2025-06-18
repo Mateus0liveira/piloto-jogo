@@ -1,4 +1,4 @@
-// server.js
+// server.js (VERSÃO CORRIGIDA E MAIS ROBUSTA)
 
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
@@ -8,30 +8,49 @@ const bcrypt = require('bcrypt');
 const app = express();
 app.use(cors());
 app.use(express.json());
-const port = 3000;
+const port = process.env.PORT || 3000; // Usa a porta da Render ou 3000 localmente
 const saltRounds = 10;
 
-const db = new sqlite3.Database('./data/database.db', (err) => {
+// O caminho do banco de dados agora usa o disco persistente da Render
+const DB_PATH = process.env.RENDER ? './data/database.db' : './database.db';
+
+const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {
-        console.error("Erro ao abrir o banco de dados:", err.message);
+        console.error("Erro FATAL ao abrir o banco de dados:", err.message);
+        process.exit(1); // Encerra o processo se não conseguir conectar ao DB
     } else {
         console.log("Conectado ao banco de dados SQLite.");
-        db.run(`CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            password TEXT
-        )`);
+        
+        // Usa db.serialize para garantir que os comandos rodem em ordem
+        db.serialize(() => {
+            // Cria a tabela de usuários
+            db.run(`CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE,
+                password TEXT
+            )`);
 
-        db.run(`CREATE TABLE IF NOT EXISTS user_access (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            category TEXT,
-            has_access BOOLEAN,
-            FOREIGN KEY (user_id) REFERENCES users (id)
-        )`);
+            // Cria a tabela de acessos
+            db.run(`CREATE TABLE IF NOT EXISTS user_access (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                category TEXT,
+                has_access BOOLEAN,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )`, (err) => {
+                if (err) {
+                    console.error("Erro ao criar tabela user_access:", err.message);
+                }
+            });
+        });
     }
 });
 
+// =================================================================
+// =================== ROTAS DA API ================================
+// =================================================================
+
+// ROTA DE REGISTRO
 app.post('/api/register', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -40,10 +59,9 @@ app.post('/api/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         const sql_user = `INSERT INTO users (username, password) VALUES (?, ?)`;
-        db.run(sql_user, [username, hashedPassword], function(err) {
+        db.run(sql_user, [username, hashedPassword], function (err) {
             if (err) {
-                res.status(400).json({ "error": "Este nome de usuário já existe." });
-                return;
+                return res.status(400).json({ "error": "Este nome de usuário já existe." });
             }
             const newUserId = this.lastID;
             const categories = ['conexao', 'amigos', 'hot', 'picante'];
@@ -53,11 +71,12 @@ app.post('/api/register', async (req, res) => {
             });
             res.json({ "message": "Usuário criado com sucesso!", "userId": newUserId });
         });
-    } catch {
-        res.status(500).json({ "error": "Erro ao registrar usuário." });
+    } catch (error) {
+        res.status(500).json({ "error": "Erro no servidor ao registrar usuário." });
     }
 });
 
+// ROTA DE LOGIN
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -65,10 +84,7 @@ app.post('/api/login', (req, res) => {
     }
     const sql = `SELECT * FROM users WHERE username = ?`;
     db.get(sql, [username], async (err, user) => {
-        if (err) {
-            return res.status(500).json({ "error": err.message });
-        }
-        if (!user) {
+        if (err || !user) {
             return res.status(400).json({ "error": "Usuário ou senha inválidos." });
         }
         const match = await bcrypt.compare(password, user.password);
@@ -80,6 +96,7 @@ app.post('/api/login', (req, res) => {
     });
 });
 
+// ROTA PARA BUSCAR PERMISSÕES
 app.get('/api/access/:username', (req, res) => {
     const username = req.params.username;
     const sql = `
@@ -99,6 +116,11 @@ app.get('/api/access/:username', (req, res) => {
     });
 });
 
+
+// =================================================================
+// =================== INICIAR O SERVIDOR ==========================
+// =================================================================
+
 app.listen(port, () => {
-    console.log(`Servidor rodando em http://localhost:${port}`);
+    console.log(`Servidor rodando na porta ${port}`);
 });
