@@ -467,3 +467,8 @@ button:active {
 .nav-item.active {
     color: #1abc9c; /* Cor de destaque do tema */
 }
+
+/* Documentação: Estilo para esconder elementos */
+.hidden {
+    display: none !important;
+}

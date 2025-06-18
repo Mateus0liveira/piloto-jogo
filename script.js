@@ -14,6 +14,7 @@ let player2Score = 0;
 let currentPlayerTurn = "";
 let availableChallenges = [];
 let selectedCategoryName = "";
+let activeCategoryFilter = null; // NOVO: Armazena a categoria a ser filtrada na tela de seleção.
 
 // Variáveis do Temporizador
 let timerInterval;
@@ -35,7 +36,7 @@ const DESAFIOS_CATEGORIAS = {
     ],
     amigos: [
         "Conte a história mais engraçada que já aconteceu com vocês ou um amigo em comum.",
-        "Qual a coisa mais louca que vocês já fizeram juntos?",
+        "Qual a coisa más louca que vocês já fizeram juntos?",
         "Compartilhe um 'mico' seu que seu parceiro presenciou.",
         "Se pudessem ser personagens de um filme, qual seria e quem seriam?",
         "Qual o plano más divertido que vocês já fizeram com amigos?",
@@ -48,7 +49,7 @@ const DESAFIOS_CATEGORIAS = {
     hot: [
         "Dê 3 beijos em qualquer parte do corpo do seu parceiro que ele escolher.",
         "Faça uma massagem sensual nas costas do seu parceiro por 2 minutos.",
-        "Descreva em detalhes o que você mais gosta no corpo do seu parceiro.",
+        "Descreva em detalhes o que você más gosta no corpo do seu parceiro.",
         "Vende os olhos do seu parceiro e beije 3 partes diferentes do corpo dele. Ele deve adivinhar quais são.",
         "Dance uma música sexy para o seu parceiro.",
         "Cochiche algo picante no ouvido do seu parceiro.",
@@ -117,9 +118,9 @@ const playAgainBtn = document.getElementById('playAgainBtn');
 
 // Referências aos novos IDs dos botões da barra de navegação
 const navItemInicio = document.getElementById('navItemInicio');
-const navItemAmigos = document.getElementById('navItemAmigos'); 
-const navItemCasal = document.getElementById('navItemCasal'); 
-const navItemPicanteHot = document.getElementById('navItemPicanteHot'); 
+const navItemAmigos = document.getElementById('navItemAmigos');
+const navItemCasal = document.getElementById('navItemCasal');
+const navItemPicanteHot = document.getElementById('navItemPicanteHot');
 const navItemSair = document.getElementById('navItemSair');
 
 // =================================================================
@@ -129,12 +130,12 @@ const navItemSair = document.getElementById('navItemSair');
 // Esconde todas as telas e mostra apenas a desejada, ATUALIZANDO a navegação
 function showScreen(screenId) {
     // Definir quais telas não exigem login
-    const publicScreens = ['loginScreen', 'registerScreen']; 
+    const publicScreens = ['loginScreen', 'registerScreen'];
 
     // Se o usuário não está logado e a tela não é pública, redirecionar para o login
-    if (!loggedInUsername && !publicScreens.includes(screenId)) { 
-        console.warn(`Tentativa de acesso à tela '${screenId}' sem login. Redirecionando para loginScreen.`); 
-        screenId = 'loginScreen'; // Redireciona para a tela de login 
+    if (!loggedInUsername && !publicScreens.includes(screenId)) {
+        console.warn(`Tentativa de acesso à tela '${screenId}' sem login. Redirecionando para loginScreen.`);
+        screenId = 'loginScreen'; // Redireciona para a tela de login
     }
 
     // Esconde todas as telas
@@ -149,7 +150,7 @@ function showScreen(screenId) {
     // --- LÓGICA PARA ATUALIZAR A BARRA DE NAVEGAÇÃO ---
     // Somente atualiza a barra de navegação se o usuário estiver logado
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    if (loggedInUsername) { 
+    if (loggedInUsername) {
         switch (screenId) {
             case 'categorySelectionScreen':
                 navItemInicio.classList.add('active');
@@ -169,7 +170,31 @@ function showScreen(screenId) {
             // Para 'loginScreen' ou 'registerScreen', a nav inferior não deve estar ativa.
         }
     }
+
+    // --- LÓGICA PARA FILTRAR BOTÕES DE CATEGORIA ---
+    if (screenId === 'categorySelectionScreen') {
+        applyCategoryFilter();
+    } else {
+        // Limpa o filtro quando sai da tela de seleção de categoria
+        activeCategoryFilter = null;
+        categoryButtons.forEach(button => button.classList.remove('hidden'));
+    }
 }
+
+// NOVO: Função para aplicar o filtro visual nos botões de categoria
+function applyCategoryFilter() {
+    categoryButtons.forEach(button => {
+        const category = button.dataset.category;
+        
+        // Se houver um filtro ativo e o botão não corresponder, esconda-o
+        if (activeCategoryFilter && !activeCategoryFilter.includes(category)) {
+            button.classList.add('hidden');
+        } else {
+            button.classList.remove('hidden');
+        }
+    });
+}
+
 
 async function handleLogin() {
     const username = loginUsernameInput.value.trim();
@@ -240,6 +265,8 @@ async function updateCategoryButtons() {
                 button.appendChild(lockIcon);
             }
         });
+        // Aplica o filtro após atualizar os botões
+        applyCategoryFilter();
     } catch (error) {
         console.error('Falha ao buscar permissões:', error);
         categoryButtons.forEach(button => button.classList.add('locked'));
@@ -379,6 +406,7 @@ playAgainBtn.addEventListener('click', () => {
 // --- FUNCIONALIDADES ATUALIZADAS PARA A BARRA DE NAVEGAÇÃO INFERIOR ---
 
 navItemInicio.addEventListener('click', () => {
+    activeCategoryFilter = null; // Limpa qualquer filtro ativo
     showScreen('categorySelectionScreen');
     if (loggedInUsername) { // Adicionado: só atualiza botões se logado
         updateCategoryButtons();
@@ -390,15 +418,10 @@ navItemAmigos.addEventListener('click', () => {
         showScreen('loginScreen'); // Redireciona para login se não estiver
         return; 
     }
-    const categoryBtn = document.querySelector('[data-category="amigos"]'); // Encontra o botão da categoria
-    if (categoryBtn && categoryBtn.classList.contains('locked')) { // Verifica se está bloqueado
-        alert("Você precisa adquirir este pacote para jogar!");
-        showScreen('categorySelectionScreen'); // Volta para a seleção de categoria
-        return; 
-    }
-    selectedCategoryName = 'amigos'; // Define a categoria
-    availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
-    showScreen('configScreen');
+    // Define o filtro para a tela de seleção de categoria
+    activeCategoryFilter = ['amigos'];
+    showScreen('categorySelectionScreen'); // Vai para a tela de seleção de categoria
+    updateCategoryButtons(); // Atualiza botões e aplica filtro
 });
 
 navItemCasal.addEventListener('click', () => { 
@@ -406,42 +429,21 @@ navItemCasal.addEventListener('click', () => {
         showScreen('loginScreen'); // Redireciona para login se não estiver
         return; 
     }
-    const categoryBtn = document.querySelector('[data-category="conexao"]'); // Categoria "conexao" para "Casal"
-    if (categoryBtn && categoryBtn.classList.contains('locked')) { // Verifica se está bloqueado
-        alert("Você precisa adquirir este pacote para jogar!");
-        showScreen('categorySelectionScreen');
-        return; 
-    }
-    selectedCategoryName = 'conexao'; // Define a categoria
-    availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
-    showScreen('configScreen');
+    // Define o filtro para a tela de seleção de categoria
+    activeCategoryFilter = ['conexao']; // 'conexao' é a categoria para 'Casal'
+    showScreen('categorySelectionScreen'); // Vai para a tela de seleção de categoria
+    updateCategoryButtons(); // Atualiza botões e aplica filtro
 });
 
-navItemPicanteHot.addEventListener('click', async () => { 
+navItemPicanteHot.addEventListener('click', () => { 
     if (!loggedInUsername) { // Verifica se está logado
         showScreen('loginScreen'); // Redireciona para login se não estiver
         return; 
     }
-
-    // Como Picante/Hot engloba duas categorias, precisamos verificar ambas ou permitir uma escolha
-    // Para simplificar, vamos direcionar para a tela de seleção de categoria,
-    // ou você pode adicionar uma lógica para escolher entre hot e picante aqui.
-    // Ou, se você quiser que ele abra a tela de configuração JÁ com uma delas, por exemplo, 'hot':
-    const hotCategoryBtn = document.querySelector('[data-category="hot"]'); 
-    const picanteCategoryBtn = document.querySelector('[data-category="picante"]'); 
-
-    if (hotCategoryBtn && !hotCategoryBtn.classList.contains('locked')) { // Se hot estiver desbloqueado
-        selectedCategoryName = 'hot';
-        availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
-        showScreen('configScreen');
-    } else if (picanteCategoryBtn && !picanteCategoryBtn.classList.contains('locked')) { // Se hot bloqueado, mas picante desbloqueado
-        selectedCategoryName = 'picante';
-        availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
-        showScreen('configScreen');
-    } else {
-        alert("Ambas as categorias 'Hot' e 'Picante' estão bloqueadas. Adquira um pacote para jogar!"); 
-        showScreen('categorySelectionScreen');
-    }
+    // Define o filtro para a tela de seleção de categoria (pode ser 'hot' ou 'picante')
+    activeCategoryFilter = ['hot', 'picante'];
+    showScreen('categorySelectionScreen'); // Vai para a tela de seleção de categoria
+    updateCategoryButtons(); // Atualiza botões e aplica filtro
 });
 
 
