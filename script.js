@@ -1,3 +1,18 @@
+Entendido! Vamos atualizar o `script.js` para que os novos botões da barra de navegação (`Amigos`, `Casal`, `Picante/Hot`) direcionem corretamente para a tela de configuração do jogo (`configScreen`) já com a categoria predefinida.
+
+### Panorama Geral da Solução:
+
+1.  **Novas Referências DOM:** Precisamos atualizar as variáveis `const` para os novos IDs dos botões no `index.html`.
+2.  **Lógica dos Event Listeners:**
+    * Os botões "Amigos", "Casal" e "Picante/Hot" agora precisarão:
+        * Definir a variável global `selectedCategoryName` para a categoria correspondente.
+        * Chamar `showScreen('configScreen')`.
+        * Lidar com o estado "locked" das categorias.
+3.  **Atualizar `showScreen` para a barra de navegação:** A lógica de ativação da navegação inferior precisa ser ajustada para os novos IDs e para ativar o botão "Início" sempre que estiver na `categorySelectionScreen`, e ativar os botões de categoria quando o jogo estiver sendo configurado ou jogado com aquela categoria.
+
+### Modificação do `script.js`
+
+```javascript
 // =================================================================
 // =================== ESTADO GLOBAL E VARIÁVEIS ===================
 // =================================================================
@@ -114,10 +129,12 @@ const finalPlayer2NameSpan = document.getElementById('finalPlayer2Name');
 const finalPlayer2ScoreSpan = document.getElementById('finalPlayer2Score');
 const winnerMessageP = document.getElementById('winnerMessage');
 const playAgainBtn = document.getElementById('playAgainBtn');
+
+// Referências aos novos IDs dos botões da barra de navegação
 const navItemInicio = document.getElementById('navItemInicio');
-const navItemPosicoes = document.getElementById('navItemPosicoes');
-const navItemPerguntas = document.getElementById('navItemPerguntas');
-const navItemDesafios = document.getElementById('navItemDesafios');
+const navItemAmigos = document.getElementById('navItemAmigos'); // NOVO
+const navItemCasal = document.getElementById('navItemCasal'); // NOVO
+const navItemPicanteHot = document.getElementById('navItemPicanteHot'); // NOVO
 const navItemSair = document.getElementById('navItemSair');
 
 // =================================================================
@@ -151,14 +168,19 @@ function showScreen(screenId) {
         switch (screenId) {
             case 'categorySelectionScreen':
                 navItemInicio.classList.add('active');
-                navItemDesafios.classList.add('active'); // Também ativa desafios, pois é a mesma tela de base
                 break;
             case 'configScreen':
             case 'gameScreen':
             case 'resultScreen':
-                navItemDesafios.classList.add('active');
+                // Ativa o botão da categoria correspondente ao jogo ativo, se aplicável
+                if (selectedCategoryName === 'amigos') {
+                    navItemAmigos.classList.add('active');
+                } else if (selectedCategoryName === 'conexao') {
+                    navItemCasal.classList.add('active');
+                } else if (selectedCategoryName === 'hot' || selectedCategoryName === 'picante') {
+                    navItemPicanteHot.classList.add('active');
+                }
                 break;
-            // Para 'Posicoes' e 'Perguntas', como mostram alerta, não ativamos na nav.
             // Para 'loginScreen' ou 'registerScreen', a nav inferior não deve estar ativa.
         }
     }
@@ -172,7 +194,7 @@ async function handleLogin() {
         return;
     }
     try {
-        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/login', {
+        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/login](https://piloto-jogo-backend.onrender.com/api/login)', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -198,7 +220,7 @@ async function handleRegister() {
         return;
     }
     try {
-        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/register', {
+        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/register](https://piloto-jogo-backend.onrender.com/api/register)', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -303,14 +325,6 @@ function startNextRound() {
     startTimer();
 }
 
-function startTimer() {
-    timeLeft = CHALLENGE_TIME;
-    timerSecondsSpan.textContent = `${timeLeft}s`;
-    timerInterval = setInterval(updateTimer, 1000);
-    completeChallengeBtn.disabled = false;
-    passChallengeBtn.disabled = false;
-}
-
 function updateTimer() {
     timeLeft--;
     timerSecondsSpan.textContent = `${timeLeft}s`;
@@ -386,22 +400,65 @@ navItemInicio.addEventListener('click', () => {
     }
 });
 
-navItemPosicoes.addEventListener('click', () => {
-    // showScreen('telaPosicoes'); // Se criar a tela, pode chamar showScreen
-    alert("Tela de Posições (Rankings) ainda não implementada.");
+navItemAmigos.addEventListener('click', () => { // NOVO ID
+    if (!loggedInUsername) { // Verifica se está logado
+        showScreen('loginScreen'); // Redireciona para login se não estiver
+        return;
+    }
+    const categoryBtn = document.querySelector('[data-category="amigos"]'); // Encontra o botão da categoria
+    if (categoryBtn && categoryBtn.classList.contains('locked')) { // Verifica se está bloqueado
+        alert("Você precisa adquirir este pacote para jogar!");
+        showScreen('categorySelectionScreen'); // Volta para a seleção de categoria
+        return;
+    }
+    selectedCategoryName = 'amigos'; // Define a categoria
+    availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
+    showScreen('configScreen');
 });
 
-navItemPerguntas.addEventListener('click', () => {
-    // showScreen('telaPerguntas'); // Se criar a tela, pode chamar showScreen
-    alert("Tela de Perguntas ainda não implementada.");
+navItemCasal.addEventListener('click', () => { // NOVO ID
+    if (!loggedInUsername) { // Verifica se está logado
+        showScreen('loginScreen'); // Redireciona para login se não estiver
+        return;
+    }
+    const categoryBtn = document.querySelector('[data-category="conexao"]'); // Categoria "conexao" para "Casal"
+    if (categoryBtn && categoryBtn.classList.contains('locked')) { // Verifica se está bloqueado
+        alert("Você precisa adquirir este pacote para jogar!");
+        showScreen('categorySelectionScreen');
+        return;
+    }
+    selectedCategoryName = 'conexao'; // Define a categoria
+    availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
+    showScreen('configScreen');
 });
 
-navItemDesafios.addEventListener('click', () => {
-    showScreen('categorySelectionScreen');
-    if (loggedInUsername) { // Adicionado: só atualiza botões se logado
-        updateCategoryButtons();
+navItemPicanteHot.addEventListener('click', async () => { // NOVO ID
+    if (!loggedInUsername) { // Verifica se está logado
+        showScreen('loginScreen'); // Redireciona para login se não estiver
+        return;
+    }
+
+    // Como Picante/Hot engloba duas categorias, precisamos verificar ambas ou permitir uma escolha
+    // Para simplificar, vamos direcionar para a tela de seleção de categoria,
+    // ou você pode adicionar uma lógica para escolher entre hot e picante aqui.
+    // Ou, se você quiser que ele abra a tela de configuração JÁ com uma delas, por exemplo, 'hot':
+    const hotCategoryBtn = document.querySelector('[data-category="hot"]');
+    const picanteCategoryBtn = document.querySelector('[data-category="picante"]');
+
+    if (hotCategoryBtn && !hotCategoryBtn.classList.contains('locked')) { // Se hot estiver desbloqueado
+        selectedCategoryName = 'hot';
+        availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
+        showScreen('configScreen');
+    } else if (picanteCategoryBtn && !picanteCategoryBtn.classList.contains('locked')) { // Se hot bloqueado, mas picante desbloqueado
+        selectedCategoryName = 'picante';
+        availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
+        showScreen('configScreen');
+    } else {
+        alert("Ambas as categorias 'Hot' e 'Picante' estão bloqueadas. Adquira um pacote para jogar!");
+        showScreen('categorySelectionScreen'); // Volta para a seleção de categoria
     }
 });
+
 
 navItemSair.addEventListener('click', logoutAndGoToStart);
 
