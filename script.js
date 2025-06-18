@@ -126,6 +126,15 @@ const navItemSair = document.getElementById('navItemSair');
 
 // Esconde todas as telas e mostra apenas a desejada, ATUALIZANDO a navegação
 function showScreen(screenId) {
+    // Definir quais telas não exigem login
+    const publicScreens = ['loginScreen', 'registerScreen'];
+
+    // Se o usuário não está logado e a tela não é pública, redirecionar para o login
+    if (!loggedInUsername && !publicScreens.includes(screenId)) {
+        console.warn(`Tentativa de acesso à tela '${screenId}' sem login. Redirecionando para loginScreen.`);
+        screenId = 'loginScreen'; // Redireciona para a tela de login
+    }
+
     // Esconde todas as telas
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     
@@ -136,17 +145,22 @@ function showScreen(screenId) {
     }
 
     // --- LÓGICA PARA ATUALIZAR A BARRA DE NAVEGAÇÃO ---
+    // Somente atualiza a barra de navegação se o usuário estiver logado
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-
-    switch (screenId) {
-        case 'categorySelectionScreen':
-            navItemInicio.classList.add('active');
-            break;
-        case 'configScreen':
-        case 'gameScreen':
-        case 'resultScreen':
-            navItemDesafios.classList.add('active');
-            break;
+    if (loggedInUsername) {
+        switch (screenId) {
+            case 'categorySelectionScreen':
+                navItemInicio.classList.add('active');
+                navItemDesafios.classList.add('active'); // Também ativa desafios, pois é a mesma tela de base
+                break;
+            case 'configScreen':
+            case 'gameScreen':
+            case 'resultScreen':
+                navItemDesafios.classList.add('active');
+                break;
+            // Para 'Posicoes' e 'Perguntas', como mostram alerta, não ativamos na nav.
+            // Para 'loginScreen' ou 'registerScreen', a nav inferior não deve estar ativa.
+        }
     }
 }
 
@@ -158,7 +172,6 @@ async function handleLogin() {
         return;
     }
     try {
-        // CORREÇÃO AQUI: Adicionado o caminho /api/login
         const response = await fetch('https://piloto-jogo-backend.onrender.com/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -185,7 +198,6 @@ async function handleRegister() {
         return;
     }
     try {
-        // CORREÇÃO AQUI: Adicionado o caminho /api/register
         const response = await fetch('https://piloto-jogo-backend.onrender.com/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -206,7 +218,6 @@ async function handleRegister() {
 async function updateCategoryButtons() {
     if (!loggedInUsername) return;
     try {
-        // CORREÇÃO AQUI: Adicionado o caminho /api/access/ e o nome do usuário
         const response = await fetch(`https://piloto-jogo-backend.onrender.com/api/access/${loggedInUsername}`);
         if (!response.ok) throw new Error('Usuário não encontrado ou sem permissões.');
         const userAccess = await response.json();
@@ -370,20 +381,26 @@ playAgainBtn.addEventListener('click', () => {
 
 navItemInicio.addEventListener('click', () => {
     showScreen('categorySelectionScreen');
-    updateCategoryButtons();
+    if (loggedInUsername) { // Adicionado: só atualiza botões se logado
+        updateCategoryButtons();
+    }
 });
 
 navItemPosicoes.addEventListener('click', () => {
+    // showScreen('telaPosicoes'); // Se criar a tela, pode chamar showScreen
     alert("Tela de Posições (Rankings) ainda não implementada.");
 });
 
 navItemPerguntas.addEventListener('click', () => {
+    // showScreen('telaPerguntas'); // Se criar a tela, pode chamar showScreen
     alert("Tela de Perguntas ainda não implementada.");
 });
 
 navItemDesafios.addEventListener('click', () => {
     showScreen('categorySelectionScreen');
-    updateCategoryButtons();
+    if (loggedInUsername) { // Adicionado: só atualiza botões se logado
+        updateCategoryButtons();
+    }
 });
 
 navItemSair.addEventListener('click', logoutAndGoToStart);
