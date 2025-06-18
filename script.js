@@ -136,11 +136,8 @@ function showScreen(screenId) {
     }
 
     // --- LÓGICA PARA ATUALIZAR A BARRA DE NAVEGAÇÃO ---
-
-    // 1. Primeiro, remove a classe 'active' de todos os itens da navegação
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
-    // 2. Depois, adiciona a classe 'active' apenas ao item correto
     switch (screenId) {
         case 'categorySelectionScreen':
             navItemInicio.classList.add('active');
@@ -150,11 +147,6 @@ function showScreen(screenId) {
         case 'resultScreen':
             navItemDesafios.classList.add('active');
             break;
-        // Adicione outros casos aqui para futuras telas (Posições, Perguntas, etc.)
-        // Por exemplo:
-        // case 'posicoesScreen':
-        //     navItemPosicoes.classList.add('active');
-        //     break;
     }
 }
 
@@ -166,7 +158,8 @@ async function handleLogin() {
         return;
     }
     try {
-        const response = await fetch('http://localhost:3000/api/login', {
+        // CORREÇÃO AQUI: Adicionado o caminho /api/login
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -192,7 +185,8 @@ async function handleRegister() {
         return;
     }
     try {
-        const response = await fetch('http://localhost:3000/api/register', {
+        // CORREÇÃO AQUI: Adicionado o caminho /api/register
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -212,7 +206,8 @@ async function handleRegister() {
 async function updateCategoryButtons() {
     if (!loggedInUsername) return;
     try {
-        const response = await fetch(`http://localhost:3000/api/access/${loggedInUsername}`);
+        // CORREÇÃO AQUI: Adicionado o caminho /api/access/ e o nome do usuário
+        const response = await fetch(`https://piloto-jogo-backend.onrender.com/api/access/${loggedInUsername}`);
         if (!response.ok) throw new Error('Usuário não encontrado ou sem permissões.');
         const userAccess = await response.json();
         categoryButtons.forEach(button => {
