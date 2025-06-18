@@ -117,9 +117,9 @@ const playAgainBtn = document.getElementById('playAgainBtn');
 
 // Referências aos novos IDs dos botões da barra de navegação
 const navItemInicio = document.getElementById('navItemInicio');
-const navItemAmigos = document.getElementById('navItemAmigos'); // NOVO
-const navItemCasal = document.getElementById('navItemCasal'); // NOVO
-const navItemPicanteHot = document.getElementById('navItemPicanteHot'); // NOVO
+const navItemAmigos = document.getElementById('navItemAmigos'); 
+const navItemCasal = document.getElementById('navItemCasal'); 
+const navItemPicanteHot = document.getElementById('navItemPicanteHot'); 
 const navItemSair = document.getElementById('navItemSair');
 
 // =================================================================
@@ -129,12 +129,12 @@ const navItemSair = document.getElementById('navItemSair');
 // Esconde todas as telas e mostra apenas a desejada, ATUALIZANDO a navegação
 function showScreen(screenId) {
     // Definir quais telas não exigem login
-    const publicScreens = ['loginScreen', 'registerScreen'];
+    const publicScreens = ['loginScreen', 'registerScreen']; 
 
     // Se o usuário não está logado e a tela não é pública, redirecionar para o login
-    if (!loggedInUsername && !publicScreens.includes(screenId)) {
-        console.warn(`Tentativa de acesso à tela '${screenId}' sem login. Redirecionando para loginScreen.`);
-        screenId = 'loginScreen'; // Redireciona para a tela de login
+    if (!loggedInUsername && !publicScreens.includes(screenId)) { 
+        console.warn(`Tentativa de acesso à tela '${screenId}' sem login. Redirecionando para loginScreen.`); 
+        screenId = 'loginScreen'; // Redireciona para a tela de login 
     }
 
     // Esconde todas as telas
@@ -149,7 +149,7 @@ function showScreen(screenId) {
     // --- LÓGICA PARA ATUALIZAR A BARRA DE NAVEGAÇÃO ---
     // Somente atualiza a barra de navegação se o usuário estiver logado
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    if (loggedInUsername) {
+    if (loggedInUsername) { 
         switch (screenId) {
             case 'categorySelectionScreen':
                 navItemInicio.classList.add('active');
@@ -179,7 +179,7 @@ async function handleLogin() {
         return;
     }
     try {
-        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/login](https://piloto-jogo-backend.onrender.com/api/login)', {
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -205,7 +205,7 @@ async function handleRegister() {
         return;
     }
     try {
-        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/register](https://piloto-jogo-backend.onrender.com/api/register)', {
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -385,50 +385,50 @@ navItemInicio.addEventListener('click', () => {
     }
 });
 
-navItemAmigos.addEventListener('click', () => { // NOVO ID
+navItemAmigos.addEventListener('click', () => { 
     if (!loggedInUsername) { // Verifica se está logado
         showScreen('loginScreen'); // Redireciona para login se não estiver
-        return;
+        return; 
     }
     const categoryBtn = document.querySelector('[data-category="amigos"]'); // Encontra o botão da categoria
     if (categoryBtn && categoryBtn.classList.contains('locked')) { // Verifica se está bloqueado
         alert("Você precisa adquirir este pacote para jogar!");
         showScreen('categorySelectionScreen'); // Volta para a seleção de categoria
-        return;
+        return; 
     }
     selectedCategoryName = 'amigos'; // Define a categoria
     availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
     showScreen('configScreen');
 });
 
-navItemCasal.addEventListener('click', () => { // NOVO ID
+navItemCasal.addEventListener('click', () => { 
     if (!loggedInUsername) { // Verifica se está logado
         showScreen('loginScreen'); // Redireciona para login se não estiver
-        return;
+        return; 
     }
     const categoryBtn = document.querySelector('[data-category="conexao"]'); // Categoria "conexao" para "Casal"
     if (categoryBtn && categoryBtn.classList.contains('locked')) { // Verifica se está bloqueado
         alert("Você precisa adquirir este pacote para jogar!");
         showScreen('categorySelectionScreen');
-        return;
+        return; 
     }
     selectedCategoryName = 'conexao'; // Define a categoria
     availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
     showScreen('configScreen');
 });
 
-navItemPicanteHot.addEventListener('click', async () => { // NOVO ID
+navItemPicanteHot.addEventListener('click', async () => { 
     if (!loggedInUsername) { // Verifica se está logado
         showScreen('loginScreen'); // Redireciona para login se não estiver
-        return;
+        return; 
     }
 
     // Como Picante/Hot engloba duas categorias, precisamos verificar ambas ou permitir uma escolha
     // Para simplificar, vamos direcionar para a tela de seleção de categoria,
     // ou você pode adicionar uma lógica para escolher entre hot e picante aqui.
     // Ou, se você quiser que ele abra a tela de configuração JÁ com uma delas, por exemplo, 'hot':
-    const hotCategoryBtn = document.querySelector('[data-category="hot"]');
-    const picanteCategoryBtn = document.querySelector('[data-category="picante"]');
+    const hotCategoryBtn = document.querySelector('[data-category="hot"]'); 
+    const picanteCategoryBtn = document.querySelector('[data-category="picante"]'); 
 
     if (hotCategoryBtn && !hotCategoryBtn.classList.contains('locked')) { // Se hot estiver desbloqueado
         selectedCategoryName = 'hot';
@@ -439,8 +439,8 @@ navItemPicanteHot.addEventListener('click', async () => { // NOVO ID
         availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
         showScreen('configScreen');
     } else {
-        alert("Ambas as categorias 'Hot' e 'Picante' estão bloqueadas. Adquira um pacote para jogar!");
-        showScreen('categorySelectionScreen'); // Volta para a seleção de categoria
+        alert("Ambas as categorias 'Hot' e 'Picante' estão bloqueadas. Adquira um pacote para jogar!"); 
+        showScreen('categorySelectionScreen');
     }
 });
 
