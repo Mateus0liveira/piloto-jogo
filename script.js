@@ -366,10 +366,26 @@ playAgainBtn.addEventListener('click', () => {
     updateCategoryButtons();
 });
 
-navItemInicio.addEventListener('click', logoutAndGoToStart);
-navItemPosicoes.addEventListener('click', logoutAndGoToStart);
-navItemPerguntas.addEventListener('click', logoutAndGoToStart);
-navItemDesafios.addEventListener('click', logoutAndGoToStart);
+// --- FUNCIONALIDADES ATUALIZADAS PARA A BARRA DE NAVEGAÇÃO INFERIOR ---
+
+navItemInicio.addEventListener('click', () => {
+    showScreen('categorySelectionScreen');
+    updateCategoryButtons();
+});
+
+navItemPosicoes.addEventListener('click', () => {
+    alert("Tela de Posições (Rankings) ainda não implementada.");
+});
+
+navItemPerguntas.addEventListener('click', () => {
+    alert("Tela de Perguntas ainda não implementada.");
+});
+
+navItemDesafios.addEventListener('click', () => {
+    showScreen('categorySelectionScreen');
+    updateCategoryButtons();
+});
+
 navItemSair.addEventListener('click', logoutAndGoToStart);
 
 document.addEventListener('DOMContentLoaded', () => {
