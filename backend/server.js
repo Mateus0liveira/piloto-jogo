@@ -11,7 +11,7 @@ app.use(express.json());
 const port = 3000;
 const saltRounds = 10;
 
-const db = new sqlite3.Database('./database.db', (err) => {
+const db = new sqlite3.Database('./data/database.db', (err) => {
     if (err) {
         console.error("Erro ao abrir o banco de dados:", err.message);
     } else {

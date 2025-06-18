@@ -1,0 +1,5 @@
+# Ignora as pastas de dependências do Node.js
+node_modules/
+
+# Ignora o arquivo do banco de dados local para não enviá-lo
+/backend/database.db
