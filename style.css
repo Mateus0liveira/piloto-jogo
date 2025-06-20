@@ -55,7 +55,7 @@ h1 {
 h2 {
     margin: 0;
     color: #1abc9c;
-    font-size: 1.7em; 
+    font-size: 1.7em;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
 }
 
@@ -93,19 +93,19 @@ h3 {
     text-align: center;
     outline: none;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
-    -webkit-appearance: none; 
+    -webkit-appearance: none;
     -moz-appearance: none;
-    appearance: none; 
+    appearance: none;
 }
 
 .input-group input[type="number"] {
-    -moz-appearance: textfield; 
+    -moz-appearance: textfield;
 }
 
 .input-group input[type="number"]::-webkit-outer-spin-button,
 .input-group input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: none; 
-    margin: 0; 
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 /* Botões gerais */
@@ -178,25 +178,25 @@ button:active {
 /* Tela de jogo */
 .challenge-box {
     background-color: #3a506b;
-    padding: 15px 20px; 
-    border-radius: 15px; 
-    margin: 0; 
-    width: 100%; 
-    height: 100%; 
+    padding: 15px 20px;
+    border-radius: 15px;
+    margin: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center; 
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); 
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     border: 1px solid #5e7a99;
-    box-sizing: border-box; 
+    box-sizing: border-box;
 }
 
 .round-info, .scoreboard {
     color: #bdc3c7;
     text-align: left;
     width: 100%;
-    padding: 0 5px; 
+    padding: 0 5px;
     box-sizing: border-box;
 }
 
@@ -205,17 +205,17 @@ button:active {
 }
 
 .scoreboard {
-    font-size: 1.1em; 
+    font-size: 1.1em;
     font-weight: bold;
     margin-top: 5px;
 }
 
 .progress-bar-container {
-    width: 90%; 
-    height: 12px; 
+    width: 90%;
+    height: 12px;
     background-color: #2c3e50;
-    border-radius: 6px; 
-    overflow: hidden; 
+    border-radius: 6px;
+    overflow: hidden;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
     margin: 15px 0;
 }
@@ -224,36 +224,36 @@ button:active {
     height: 100%;
     width: 0%;
     background-color: #1abc9c;
-    border-radius: 6px; 
+    border-radius: 6px;
     transition: width 0.5s ease-in-out;
 }
 
 .turn-timer-container {
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: flex-start;
     gap: 20px;
-    width: 100%; 
-    flex-wrap: nowrap; 
-    padding: 0 5px; 
+    width: 100%;
+    flex-wrap: nowrap;
+    padding: 0 5px;
     box-sizing: border-box;
     margin-bottom: 15px;
 }
 
 .turn-timer-container h2 {
-    margin: 0; 
-    display: flex; 
+    margin: 0;
+    display: flex;
     align-items: center;
 }
 
 .player-turn-pill {
     background-color: #34495e;
     color: #ecf0f1;
-    padding: 3px 8px; 
+    padding: 3px 8px;
     font-size: 0.8em;
     font-weight: bold;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); 
-    display: inline-block; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: inline-block;
     white-space: nowrap;
     border-radius: 12px;
     line-height: 1;
@@ -269,44 +269,44 @@ button:active {
 
 .timer-display span {
     color: #1abc9c;
-    text-shadow: none; 
+    text-shadow: none;
 }
 
 .challenge-box h3 {
     font-size: 1.4em;
-    text-align: left; 
-    width: 100%; 
-    padding: 0 5px; 
+    text-align: left;
+    width: 100%;
+    padding: 0 5px;
     box-sizing: border-box;
 }
 
 #challengeText {
-    font-size: 1.1em; 
+    font-size: 1.1em;
     font-weight: bold;
     color: #ecf0f1;
-    line-height: 1.5; 
-    text-align: left; 
-    width: 100%; 
-    padding: 5px; 
-    box-sizing: border-box; 
+    line-height: 1.5;
+    text-align: left;
+    width: 100%;
+    padding: 5px;
+    box-sizing: border-box;
     flex-grow: 1;
     min-height: 100px;
-    overflow: auto; 
+    overflow: auto;
     margin: 10px 0;
 }
 
 .game-buttons {
-    display: flex; 
-    flex-direction: column; 
-    width: 100%; 
-    padding: 0 5px; 
-    box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 5px;
+    box-sizing: border-box;
     gap: 10px;
 }
 
 .game-buttons button {
     margin: 0;
-    width: 100%; 
+    width: 100%;
     padding: 14px 20px;
     font-size: 1.2em;
     font-weight: bold;
@@ -318,12 +318,12 @@ button:active {
 
 @media (min-width: 380px) {
     .game-buttons {
-        flex-direction: row; 
-        justify-content: space-around; 
+        flex-direction: row;
+        justify-content: space-around;
     }
     .game-buttons button {
-        width: 48%; 
-        margin: 0; 
+        width: 48%;
+        margin: 0;
     }
 }
 
@@ -349,12 +349,12 @@ button:active {
 /* Tela de resultado */
 .final-scoreboard {
     margin: 20px 0;
-    font-size: 1.5em; 
+    font-size: 1.5em;
     font-weight: bold;
 }
 
 #winnerMessage {
-    font-size: 1.4em; 
+    font-size: 1.4em;
     font-weight: bold;
     color: #1abc9c;
     margin-top: 20px;
@@ -382,23 +382,23 @@ button:active {
     align-items: center;
     border-top: 1px solid rgba(236, 240, 241, 0.2);
     height: 65px;
-    box-sizing: border-box; 
+    box-sizing: border-box;
     z-index: 1000;
 }
 
 .nav-item {
-    background: none; 
-    border: none; 
+    background: none;
+    border: none;
     color: #bdc3c7;
-    font-size: 0.8em; 
+    font-size: 0.8em;
     font-weight: 600;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     flex-grow: 1;
     height: 100%;
-    padding: 5px; 
+    padding: 5px;
     box-sizing: border-box;
     cursor: pointer;
     transition: color 0.3s ease, transform 0.2s ease;
@@ -409,7 +409,7 @@ button:active {
 
 .nav-item:hover {
     color: #1abc9c;
-    transform: translateY(-2px); 
+    transform: translateY(-2px);
 }
 
 .nav-item:active {
@@ -417,14 +417,14 @@ button:active {
 }
 
 .nav-icon {
-    font-size: 1.8em; 
-    margin-bottom: 3px; 
-    line-height: 1; 
+    font-size: 1.8em;
+    margin-bottom: 3px;
+    line-height: 1;
 }
 
 .nav-text {
-    font-size: 0.7em; 
-    white-space: nowrap; 
+    font-size: 0.7em;
+    white-space: nowrap;
 }
 
 /* Estilo para botões de categoria bloqueados */
@@ -468,7 +468,7 @@ button:active {
     color: #1abc9c; /* Cor de destaque do tema */
 }
 
-/* Documentação: Estilo para esconder elementos */
+/* Novo: Estilo para esconder elementos */
 .hidden {
     display: none !important;
 }

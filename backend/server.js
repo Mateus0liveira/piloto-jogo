@@ -1,8 +1,7 @@
-// server.js (VERSÃO ATUALIZADA PARA POSTGRESQL)
+// server.js (VERSÃO COMPLETA E ATUALIZADA PARA POSTGRESQL)
 
 const express = require('express');
-// const sqlite3 = require('sqlite3').verbose(); // Remova esta linha
-const { Pool } = require('pg'); // Adicione esta linha para o PostgreSQL
+const { Pool } = require('pg');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
 
@@ -16,8 +15,7 @@ const saltRounds = 10;
 // Use a variável de ambiente DATABASE_URL na Render
 // ou a sua connection string diretamente para testes locais.
 // É altamente recomendável usar variáveis de ambiente para a connection string!
-const connectionString = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_YEtVb3eI5RAK@ep-yellow-dawn-a8k4xiu6-pooler.eastus2.azure.neon.tech/neondb?sslmode=require"; 
-//
+const connectionString = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_YEtVb3eI5RAK@ep-yellow-dawn-a8k4xiu6-pooler.eastus2.azure.neon.tech/neondb?sslmode=require";
 
 const pool = new Pool({
     connectionString: connectionString,
@@ -78,17 +76,17 @@ app.post('/api/register', async (req, res) => {
 
         const categories = ['conexao', 'amigos', 'hot', 'picante'];
         const accessInsertQuery = 'INSERT INTO user_access (user_id, category, has_access) VALUES ($1, $2, $3)';
-        
+
         // Inserir acessos para cada categoria. Usando Promise.all para executar em paralelo.
         await Promise.all(categories.map(category => {
             return pool.query(accessInsertQuery, [newUserId, category, false]); // 'false' para has_access BOOLEAN
         }));
-        
+
         res.json({ "message": "Usuário criado com sucesso!", "userId": newUserId });
 
     } catch (error) {
         // Erro de duplicidade de usuário no PostgreSQL tem código '23505'
-        if (error.code === '23505') { 
+        if (error.code === '23505') {
             return res.status(400).json({ "error": "Este nome de usuário já existe." });
         }
         console.error("Erro no registro:", error);
@@ -128,9 +126,9 @@ app.get('/api/access/:username', async (req, res) => {
     const username = req.params.username;
     try {
         const sql = `
-            SELECT ua.category, ua.has_access 
+            SELECT ua.category, ua.has_access
             FROM users u
-            JOIN user_access ua ON u.id = ua.user_id 
+            JOIN user_access ua ON u.id = ua.user_id
             WHERE u.username = $1`; // Placeholder $1 para PostgreSQL
         const result = await pool.query(sql, [username]);
         const rows = result.rows; // PostgreSQL retorna rows

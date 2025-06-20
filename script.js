@@ -14,7 +14,7 @@ let player2Score = 0;
 let currentPlayerTurn = "";
 let availableChallenges = [];
 let selectedCategoryName = "";
-let activeCategoryFilter = null; // NOVO: Armazena a categoria a ser filtrada na tela de seleção.
+let activeCategoryFilter = null; // Armazena a categoria(s) a ser(em) filtrada(s) na tela de seleção.
 
 // Variáveis do Temporizador
 let timerInterval;
@@ -116,7 +116,7 @@ const finalPlayer2ScoreSpan = document.getElementById('finalPlayer2Score');
 const winnerMessageP = document.getElementById('winnerMessage');
 const playAgainBtn = document.getElementById('playAgainBtn');
 
-// Referências aos novos IDs dos botões da barra de navegação
+// Referências aos IDs dos botões da barra de navegação
 const navItemInicio = document.getElementById('navItemInicio');
 const navItemAmigos = document.getElementById('navItemAmigos');
 const navItemCasal = document.getElementById('navItemCasal');
@@ -140,7 +140,7 @@ function showScreen(screenId) {
 
     // Esconde todas as telas
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    
+
     // Mostra a tela desejada
     const activeScreen = document.getElementById(screenId);
     if (activeScreen) {
@@ -181,11 +181,11 @@ function showScreen(screenId) {
     }
 }
 
-// NOVO: Função para aplicar o filtro visual nos botões de categoria
+// Função para aplicar o filtro visual nos botões de categoria
 function applyCategoryFilter() {
     categoryButtons.forEach(button => {
         const category = button.dataset.category;
-        
+
         // Se houver um filtro ativo e o botão não corresponder, esconda-o
         if (activeCategoryFilter && !activeCategoryFilter.includes(category)) {
             button.classList.add('hidden');
@@ -212,6 +212,7 @@ async function handleLogin() {
         const result = await response.json();
         if (response.ok) {
             loggedInUsername = result.username;
+            localStorage.setItem('loggedInUsername', loggedInUsername); // Salva no localStorage
             showScreen('categorySelectionScreen');
             updateCategoryButtons();
         } else {
@@ -287,6 +288,7 @@ function selectCategory(event) {
 
 function logoutAndGoToStart() {
     loggedInUsername = null;
+    localStorage.removeItem('loggedInUsername'); // Remove do localStorage
     loginUsernameInput.value = "";
     loginPasswordInput.value = "";
     showScreen('loginScreen');
@@ -399,6 +401,7 @@ startGameBtn.addEventListener('click', startGame);
 completeChallengeBtn.addEventListener('click', handleCompleteChallenge);
 passChallengeBtn.addEventListener('click', handlePassChallenge);
 playAgainBtn.addEventListener('click', () => {
+    activeCategoryFilter = null; // Limpa o filtro ao jogar novamente
     showScreen('categorySelectionScreen');
     updateCategoryButtons();
 });
@@ -413,10 +416,10 @@ navItemInicio.addEventListener('click', () => {
     }
 });
 
-navItemAmigos.addEventListener('click', () => { 
+navItemAmigos.addEventListener('click', () => {
     if (!loggedInUsername) { // Verifica se está logado
         showScreen('loginScreen'); // Redireciona para login se não estiver
-        return; 
+        return;
     }
     // Define o filtro para a tela de seleção de categoria
     activeCategoryFilter = ['amigos'];
@@ -424,10 +427,10 @@ navItemAmigos.addEventListener('click', () => {
     updateCategoryButtons(); // Atualiza botões e aplica filtro
 });
 
-navItemCasal.addEventListener('click', () => { 
+navItemCasal.addEventListener('click', () => {
     if (!loggedInUsername) { // Verifica se está logado
         showScreen('loginScreen'); // Redireciona para login se não estiver
-        return; 
+        return;
     }
     // Define o filtro para a tela de seleção de categoria
     activeCategoryFilter = ['conexao']; // 'conexao' é a categoria para 'Casal'
@@ -435,10 +438,10 @@ navItemCasal.addEventListener('click', () => {
     updateCategoryButtons(); // Atualiza botões e aplica filtro
 });
 
-navItemPicanteHot.addEventListener('click', () => { 
+navItemPicanteHot.addEventListener('click', () => {
     if (!loggedInUsername) { // Verifica se está logado
         showScreen('loginScreen'); // Redireciona para login se não estiver
-        return; 
+        return;
     }
     // Define o filtro para a tela de seleção de categoria (pode ser 'hot' ou 'picante')
     activeCategoryFilter = ['hot', 'picante'];
@@ -450,5 +453,11 @@ navItemPicanteHot.addEventListener('click', () => {
 navItemSair.addEventListener('click', logoutAndGoToStart);
 
 document.addEventListener('DOMContentLoaded', () => {
-    showScreen('loginScreen');
+    loggedInUsername = localStorage.getItem('loggedInUsername'); // Tenta recuperar o usuário do localStorage
+    if (loggedInUsername) {
+        showScreen('categorySelectionScreen'); // Se tiver usuário, vai para a seleção de categoria
+        updateCategoryButtons(); // Atualiza o estado dos botões de categoria e aplica o filtro
+    } else {
+        showScreen('loginScreen');
+    }
 });
