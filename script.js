@@ -2,6 +2,8 @@
 // =================== ESTADO GLOBAL E VARIÁVEIS ===================
 // =================================================================
 
+console.log("script.js carregado!"); // Adicionado para depuração
+
 let loggedInUsername = null; // Armazena o usuário que fez login
 
 // Variáveis do Jogo
@@ -219,7 +221,7 @@ async function handleLogin() {
             alert(`Erro: ${result.error}`);
         }
     } catch (error) {
-        alert("Não foi possível conectar ao servidor. Verifique se ele está rodando.");
+        alert("Não foi possível conectar ao servidor.");
     }
 }
 
@@ -339,11 +341,24 @@ function startNextRound() {
     startTimer();
 }
 
+function startTimer() {
+    // Garante que qualquer temporizador anterior seja limpo antes de iniciar um novo
+    clearInterval(timerInterval);
+
+    timeLeft = CHALLENGE_TIME;
+    timerSecondsSpan.textContent = `${timeLeft}s`; // Atualiza a exibição imediatamente
+    
+    timerInterval = setInterval(updateTimer, 1000);
+    completeChallengeBtn.disabled = false;
+    passChallengeBtn.disabled = false;
+}
+
 function updateTimer() {
     timeLeft--;
     timerSecondsSpan.textContent = `${timeLeft}s`;
     if (timeLeft <= 0) {
         clearInterval(timerInterval);
+        // Automaticamente passa para a próxima rodada se o tempo acabar
         startNextRound();
     }
 }
