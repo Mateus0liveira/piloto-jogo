@@ -14,9 +14,11 @@ let currentRound = 0;
 let player1Score = 0;
 let player2Score = 0;
 let currentPlayerTurn = "";
-let availableChallenges = [];
+let availableChallenges = []; // NOVO: Mantenha aqui uma cópia profunda para não esgotar os desafios originais
 let selectedCategoryName = "";
 let activeCategoryFilter = null; // Armazena a categoria(s) a ser(em) filtrada(s) na tela de seleção.
+let currentScreenId = 'loginScreen'; // Variável para armazenar a tela atual
+let previousScreenId = 'loginScreen'; // Armazena a tela anterior para "voltar"
 
 // Variáveis do Temporizador
 let timerInterval;
@@ -93,6 +95,7 @@ const categorySelectionScreen = document.getElementById('categorySelectionScreen
 const configScreen = document.getElementById('configScreen');
 const gameScreen = document.getElementById('gameScreen');
 const resultScreen = document.getElementById('resultScreen');
+const confirmLogoutScreen = document.getElementById('confirmLogoutScreen');
 
 const categoryButtons = document.querySelectorAll('.category-btn');
 const player1NameInput = document.getElementById('player1Name');
@@ -125,14 +128,24 @@ const navItemCasal = document.getElementById('navItemCasal');
 const navItemPicanteHot = document.getElementById('navItemPicanteHot');
 const navItemSair = document.getElementById('navItemSair');
 
+// Referências aos botões da tela de confirmação
+const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+
 // =================================================================
 // =================== FUNÇÕES PRINCIPAIS ==========================
 // =================================================================
 
 // Esconde todas as telas e mostra apenas a desejada, ATUALIZANDO a navegação
 function showScreen(screenId) {
+    // Salva a tela anterior antes de mudar para a nova
+    if (currentScreenId !== screenId) { // Só atualiza se realmente for mudar de tela
+        previousScreenId = currentScreenId;
+    }
+    currentScreenId = screenId; // Atualiza a tela atual no estado global
+
     // Definir quais telas não exigem login
-    const publicScreens = ['loginScreen', 'registerScreen'];
+    const publicScreens = ['loginScreen', 'registerScreen', 'confirmLogoutScreen'];
 
     // Se o usuário não está logado e a tela não é pública, redirecionar para o login
     if (!loggedInUsername && !publicScreens.includes(screenId)) {
@@ -150,9 +163,9 @@ function showScreen(screenId) {
     }
 
     // --- LÓGICA PARA ATUALIZAR A BARRA DE NAVEGAÇÃO ---
-    // Somente atualiza a barra de navegação se o usuário estiver logado
+    // Somente atualiza a barra de navegação se o usuário estiver logado E não estiver na tela de confirmação/login
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    if (loggedInUsername) {
+    if (loggedInUsername && !publicScreens.includes(screenId) && screenId !== 'confirmLogoutScreen') {
         switch (screenId) {
             case 'categorySelectionScreen':
                 navItemInicio.classList.add('active');
@@ -243,7 +256,15 @@ async function handleRegister() {
             alert("Conta criada com sucesso! Por favor, faça o login.");
             showScreen('loginScreen');
         } else {
-            alert(`Erro: ${result.error}`);
+            // Se o backend retornou erros de validação
+            if (result.errors && Array.isArray(result.errors)) {
+                const errorMessages = result.errors.map(err => err.msg).join('\n');
+                alert(`Erros de validação:\n${errorMessages}`);
+            } else if (result.error) { // Garante que a mensagem de erro geral seja exibida
+                alert(`Erro: ${result.error}`);
+            } else {
+                alert("Ocorreu um erro desconhecido ao registrar o usuário.");
+            }
         }
     } catch (error) {
         alert("Não foi possível conectar ao servidor.");
@@ -291,9 +312,78 @@ function selectCategory(event) {
 function logoutAndGoToStart() {
     loggedInUsername = null;
     localStorage.removeItem('loggedInUsername'); // Remove do localStorage
+    localStorage.removeItem('gameState'); // Remove o estado do jogo ao deslogar
     loginUsernameInput.value = "";
     loginPasswordInput.value = "";
     showScreen('loginScreen');
+}
+
+function saveGameState() {
+    const gameState = {
+        player1Name,
+        player2Name,
+        numRounds,
+        currentRound,
+        player1Score,
+        player2Score,
+        currentPlayerTurn,
+        availableChallenges,
+        selectedCategoryName,
+        timeLeft,
+        currentScreenId, // Salva a tela atual
+        challengeText: challengeTextP.textContent // Salva o texto do desafio atual
+    };
+    localStorage.setItem('gameState', JSON.stringify(gameState));
+}
+
+function loadGameState() {
+    const savedState = localStorage.getItem('gameState');
+    if (savedState) {
+        const gameState = JSON.parse(savedState);
+
+        // Recupera as variáveis do estado
+        player1Name = gameState.player1Name;
+        player2Name = gameState.player2Name;
+        numRounds = gameState.numRounds;
+        currentRound = gameState.currentRound;
+        player1Score = gameState.player1Score;
+        player2Score = gameState.player2Score;
+        currentPlayerTurn = gameState.currentPlayerTurn;
+        availableChallenges = gameState.availableChallenges;
+        selectedCategoryName = gameState.selectedCategoryName;
+        timeLeft = gameState.timeLeft;
+        currentScreenId = gameState.currentScreenId;
+
+        // Atualiza a UI com os dados recuperados
+        player1NameInput.value = player1Name;
+        player2NameInput.value = player2Name;
+        numRoundsInput.value = numRounds;
+        player1ScoreNameSpan.textContent = player1Name;
+        player2ScoreNameSpan.textContent = player2Name;
+        player1ScoreSpan.textContent = player1Score;
+        player2ScoreSpan.textContent = player2Score;
+        currentRoundSpan.textContent = currentRound;
+        totalRoundsSpan.textContent = numRounds;
+        playerTurnPillSpan.textContent = `Vez de: ${currentPlayerTurn}`;
+        challengeTextP.textContent = gameState.challengeText || "Recuperando desafio..."; // Recupera o desafio atual
+
+        updateProgressBar();
+
+        // Volta para a tela correta e reinicia o timer se estava no jogo
+        if (currentScreenId === 'gameScreen') {
+            showScreen('gameScreen');
+            startTimer(); // Reinicia o timer da rodada
+        } else if (loggedInUsername) {
+            // Se estava em outra tela logada (config, result, categorySelection)
+            showScreen(currentScreenId);
+            updateCategoryButtons(); // Garante botões de categoria corretos
+        } else {
+            // Caso o loggedInUsername não esteja setado (mesmo com gameState salvo)
+            showScreen('loginScreen');
+        }
+        return true; // Indica que um estado foi carregado
+    }
+    return false; // Indica que nenhum estado foi carregado
 }
 
 function startGame() {
@@ -315,6 +405,7 @@ function startGame() {
     player2ScoreNameSpan.textContent = player2Name;
     showScreen('gameScreen');
     startNextRound();
+    saveGameState(); // Salva o estado inicial do jogo
 }
 
 function startNextRound() {
@@ -322,6 +413,8 @@ function startNextRound() {
     currentRound++;
     if (currentRound > numRounds) {
         showResultScreen();
+        // Ao final do jogo, o estado salvo pode ser limpo
+        localStorage.removeItem('gameState');
         return;
     }
     currentPlayerTurn = (currentRound % 2 !== 0) ? player1Name : player2Name;
@@ -330,8 +423,18 @@ function startNextRound() {
     player1ScoreSpan.textContent = player1Score;
     player2ScoreSpan.textContent = player2Score;
     playerTurnPillSpan.textContent = `Vez de: ${currentPlayerTurn}`;
+
+    // Certifique-se de que availableChallenges seja sempre uma cópia fresca da categoria selecionada
+    // Se o jogo está começando do zero, reinicia a lista completa de desafios da categoria
+    if (currentRound === 1 || !availableChallenges || availableChallenges.length === 0) {
+        availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]]; // Recarrega se for a primeira rodada ou se a lista esgotou
+    }
+
     if (availableChallenges.length === 0) {
-        challengeTextP.textContent = "Não há mais desafios disponíveis!";
+        challengeTextP.textContent = "Não há mais desafios disponíveis para esta categoria!";
+        // Caso todos os desafios tenham sido usados, termina o jogo ou redireciona
+        showResultScreen();
+        return;
     } else {
         const randomIndex = Math.floor(Math.random() * availableChallenges.length);
         challengeTextP.textContent = availableChallenges[randomIndex];
@@ -339,15 +442,20 @@ function startNextRound() {
     }
     updateProgressBar();
     startTimer();
+    saveGameState(); // Salva o estado após cada nova rodada
 }
 
 function startTimer() {
     // Garante que qualquer temporizador anterior seja limpo antes de iniciar um novo
     clearInterval(timerInterval);
 
-    timeLeft = CHALLENGE_TIME;
+    // Se estiver carregando de um estado salvo, timeLeft já terá o valor correto.
+    // Caso contrário (se o jogo acabou de começar ou foi resetado), reinicia para CHALLENGE_TIME.
+    if (currentScreenId !== 'gameScreen' || typeof timeLeft === 'undefined' || timeLeft === null || timeLeft <= 0) {
+        timeLeft = CHALLENGE_TIME;
+    }
     timerSecondsSpan.textContent = `${timeLeft}s`; // Atualiza a exibição imediatamente
-    
+
     timerInterval = setInterval(updateTimer, 1000);
     completeChallengeBtn.disabled = false;
     passChallengeBtn.disabled = false;
@@ -356,6 +464,7 @@ function startTimer() {
 function updateTimer() {
     timeLeft--;
     timerSecondsSpan.textContent = `${timeLeft}s`;
+    saveGameState(); // Salva o estado do timer a cada segundo
     if (timeLeft <= 0) {
         clearInterval(timerInterval);
         // Automaticamente passa para a próxima rodada se o tempo acabar
@@ -372,11 +481,13 @@ function handleCompleteChallenge() {
     clearInterval(timerInterval);
     if (currentPlayerTurn === player1Name) player1Score++;
     else player2Score++;
+    saveGameState(); // Salva o estado antes de passar para a próxima rodada
     startNextRound();
 }
 
 function handlePassChallenge() {
     clearInterval(timerInterval);
+    saveGameState(); // Salva o estado antes de passar para a próxima rodada
     startNextRound();
 }
 
@@ -394,6 +505,8 @@ function showResultScreen() {
     } else {
         winnerMessageP.textContent = "O jogo terminou em empate!";
     }
+    // Ao final do jogo, o estado salvo pode ser limpo
+    localStorage.removeItem('gameState');
 }
 
 // =================================================================
@@ -465,14 +578,37 @@ navItemPicanteHot.addEventListener('click', () => {
 });
 
 
-navItemSair.addEventListener('click', logoutAndGoToStart);
+navItemSair.addEventListener('click', () => {
+    // Para o cronômetro se estiver rodando
+    clearInterval(timerInterval);
+    showScreen('confirmLogoutScreen'); // Mostra a tela de confirmação
+});
+
+confirmLogoutBtn.addEventListener('click', logoutAndGoToStart); // Confirma a saída
+cancelLogoutBtn.addEventListener('click', () => {
+    showScreen(previousScreenId); // Volta para a tela anterior
+    // Se a tela anterior era gameScreen, reinicia o timer com o tempo salvo
+    if (previousScreenId === 'gameScreen') {
+        startTimer();
+    }
+});
+
 
 document.addEventListener('DOMContentLoaded', () => {
-    loggedInUsername = localStorage.getItem('loggedInUsername'); // Tenta recuperar o usuário do localStorage
+    // Primeiro tenta carregar o usuário logado
+    loggedInUsername = localStorage.getItem('loggedInUsername');
+
+    // Se o usuário está logado, tenta carregar o estado do jogo
     if (loggedInUsername) {
-        showScreen('categorySelectionScreen'); // Se tiver usuário, vai para a seleção de categoria
-        updateCategoryButtons(); // Atualiza o estado dos botões de categoria e aplica o filtro
+        const loaded = loadGameState(); // Tenta carregar o estado do jogo
+        if (!loaded) {
+            // Se não houver estado de jogo salvo, mas o usuário está logado,
+            // vai para a tela de seleção de categoria como padrão
+            showScreen('categorySelectionScreen');
+            updateCategoryButtons(); // Atualiza o estado dos botões de categoria e aplica o filtro
+        }
     } else {
+        // Se não houver usuário logado, vai para a tela de login
         showScreen('loginScreen');
     }
 });

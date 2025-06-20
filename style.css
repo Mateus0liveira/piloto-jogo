@@ -472,3 +472,17 @@ button:active {
 .hidden {
     display: none !important;
 }
+
+.registration-info-text {
+    font-size: 0.9em;
+    color: #bdc3c7; /* Cor similar ao round-info/scoreboard */
+    margin-bottom: 8px;
+    line-height: 1.3;
+    text-align: center;
+    padding: 0 10px; /* Um pequeno padding para não grudar nas bordas */
+}
+
+/* Novo: Estilo para esconder elementos */
+.hidden {
+    display: none !important;
+}
