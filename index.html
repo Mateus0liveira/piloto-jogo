@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jogo de Desafios para Casal</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
+    <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
+    <link href="[https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap)" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css)">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -33,7 +33,7 @@
             <h1>Criar Conta</h1>
             <p class="registration-info-text">O usuário deve ser um e-mail válido.</p>
             <p class="registration-info-text">A senha precisa ter no mínimo 8 caracteres, incluindo pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.</p>
-            
+
             <div class="input-group">
                 <label for="registerUsername">Novo Usuário:</label>
                 <input type="text" id="registerUsername" autocomplete="username">
@@ -44,6 +44,18 @@
             </div>
             <button id="registerBtn">Registrar</button>
             <p class="form-link">Já tem uma conta? <a href="#" id="showLoginLink">Faça o login</a></p>
+        </div>
+
+        <div id="verifyAccountScreen" class="screen">
+            <h1>Verificar Conta</h1>
+            <p style="font-size: 1.1em; margin-bottom: 20px;">Um código de verificação foi enviado para <span id="verificationEmailDisplay" style="font-weight: bold; color: #1abc9c;">seu e-mail</span>.</p>
+            <div class="input-group">
+                <label for="verificationCode">Código de Verificação:</label>
+                <input type="text" id="verificationCode" inputmode="numeric" pattern="[0-9]*" maxlength="6">
+            </div>
+            <button id="submitVerificationCodeBtn">Verificar</button>
+            <p class="form-link">Não recebeu o código? <a href="#" id="resendVerificationCodeLink">Reenviar Código</a></p>
+            <p class="form-link"><a href="#" id="backToLoginFromVerify">Voltar ao Login</a></p>
         </div>
 
         <div id="categorySelectionScreen" class="screen">
@@ -77,19 +89,19 @@
             <div class="challenge-box">
                 <p class="round-info">Rodada: <span id="currentRound">0</span>/<span id="totalRounds">0</span></p>
                 <p class="scoreboard">Placar: <span id="player1ScoreName"></span>: <span id="player1Score">0</span> | <span id="player2ScoreName"></span>: <span id="player2Score">0</span></p>
-                
+
                 <div class="progress-bar-container">
                     <div class="progress-bar-fill" id="progressBarFill"></div>
                 </div>
 
                 <div class="turn-timer-container">
-                    <h2><span id="playerTurnPill" class="player-turn-pill">Vez de:</span></h2> 
-                    <p class="timer-display"> <span id="timerSeconds">30s</span></p> 
+                    <h2><span id="playerTurnPill" class="player-turn-pill">Vez de:</span></h2>
+                    <p class="timer-display"> <span id="timerSeconds">30s</span></p>
                 </div>
 
                 <h3>Seu Desafio:</h3>
                 <p id="challengeText"></p>
-                
+
                 <div class="game-buttons">
                     <button id="completeChallengeBtn">Completei o Desafio</button>
                     <button id="passChallengeBtn">🍺 Prefiro Beber</button>
@@ -107,7 +119,7 @@
             <p id="winnerMessage"></p>
             <button id="playAgainBtn">Jogar Novamente</button>
         </div>
-        
+
         <div id="confirmLogoutScreen" class="screen">
             <h1>Tem certeza que quer sair?</h1>
             <p style="font-size: 1.2em; margin-bottom: 30px;">Todo o progresso do jogo atual será perdido!</p>
@@ -116,7 +128,7 @@
                 <button id="cancelLogoutBtn" class="confirm-btn-no">Não, Ficar</button>
             </div>
         </div>
-        
+
     </div>
 
     <div class="bottom-nav">
