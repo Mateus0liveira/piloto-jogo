@@ -5,7 +5,7 @@
 console.log("script.js carregado!"); // Adicionado para depuração
 
 let loggedInUsername = null; // Armazena o usuário que fez login
-let registeredEmailForVerification = null; // NOVO: Armazena o e-mail recém-registrado para verificação
+let registeredEmailForVerification = null; // Armazena o e-mail recém-registrado para verificação
 
 // Variáveis do Jogo
 let player1Name = "";
@@ -15,7 +15,7 @@ let currentRound = 0;
 let player1Score = 0;
 let player2Score = 0;
 let currentPlayerTurn = "";
-let availableChallenges = []; // NOVO: Mantenha aqui uma cópia profunda para não esgotar os desafios originais
+let availableChallenges = []; // Mantenha aqui uma cópia profunda para não esgotar os desafios originais
 let selectedCategoryName = "";
 let activeCategoryFilter = null; // Armazena a categoria(s) a ser(em) filtrada(s) na tela de seleção.
 let currentScreenId = 'loginScreen'; // Variável para armazenar a tela atual
@@ -99,12 +99,12 @@ const resultScreen = document.getElementById('resultScreen');
 const confirmLogoutScreen = document.getElementById('confirmLogoutScreen');
 
 // Novas referências para a tela de verificação
-const verifyAccountScreen = document.getElementById('verifyAccountScreen'); // NOVO
-const verificationEmailDisplay = document.getElementById('verificationEmailDisplay'); // NOVO
-const verificationCodeInput = document.getElementById('verificationCode'); // NOVO
-const submitVerificationCodeBtn = document.getElementById('submitVerificationCodeBtn'); // NOVO
-const resendVerificationCodeLink = document.getElementById('resendVerificationCodeLink'); // NOVO
-const backToLoginFromVerify = document.getElementById('backToLoginFromVerify'); // NOVO
+const verifyAccountScreen = document.getElementById('verifyAccountScreen');
+const verificationEmailDisplay = document.getElementById('verificationEmailDisplay');
+const verificationCodeInput = document.getElementById('verificationCode');
+const submitVerificationCodeBtn = document.getElementById('submitVerificationCodeBtn');
+const resendVerificationCodeLink = document.getElementById('resendVerificationCodeLink');
+const backToLoginFromVerify = document.getElementById('backToLoginFromVerify');
 
 
 const categoryButtons = document.querySelectorAll('.category-btn');
@@ -155,7 +155,7 @@ function showScreen(screenId) {
     currentScreenId = screenId; // Atualiza a tela atual no estado global
 
     // Definir quais telas não exigem login
-    const publicScreens = ['loginScreen', 'registerScreen', 'verifyAccountScreen', 'confirmLogoutScreen']; // Adicionado 'verifyAccountScreen'
+    const publicScreens = ['loginScreen', 'registerScreen', 'verifyAccountScreen', 'confirmLogoutScreen'];
 
     // Se o usuário não está logado e a tela não é pública, redirecionar para o login
     if (!loggedInUsername && !publicScreens.includes(screenId)) {
@@ -175,7 +175,7 @@ function showScreen(screenId) {
     // --- LÓGICA PARA ATUALIZAR A BARRA DE NAVEGAÇÃO ---
     // Somente atualiza a barra de navegação se o usuário estiver logado E não estiver em telas públicas (incluindo confirmação)
     document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-    if (loggedInUsername && !publicScreens.includes(screenId)) { 
+    if (loggedInUsername && !publicScreens.includes(screenId)) {
         switch (screenId) {
             case 'categorySelectionScreen':
                 navItemInicio.classList.add('active');
@@ -224,6 +224,7 @@ function applyCategoryFilter() {
     });
 }
 
+
 async function handleLogin() {
     const username = loginUsernameInput.value.trim();
     const password = loginPasswordInput.value.trim();
@@ -232,7 +233,7 @@ async function handleLogin() {
         return;
     }
     try {
-        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/login](https://piloto-jogo-backend.onrender.com/api/login)', {
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -259,7 +260,7 @@ async function handleRegister() {
         return;
     }
     try {
-        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/register](https://piloto-jogo-backend.onrender.com/api/register)', {
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -268,8 +269,8 @@ async function handleRegister() {
         if (response.ok) {
             // Se o registro foi bem-sucedido, armazena o e-mail e vai para a tela de verificação
             registeredEmailForVerification = username;
-            alert("Conta criada com sucesso! Por favor, verifique seu e-mail para ativar sua conta.");
-            showScreen('verifyAccountScreen');
+            alert("Conta criada com sucesso! Por favor, verifique seu e-mail para ativar sua conta."); // Mensagem atualizada
+            showScreen('verifyAccountScreen'); // Redireciona para a tela de verificação
         } else {
             // Se o backend retornou erros de validação
             if (result.errors && Array.isArray(result.errors)) {
@@ -295,7 +296,7 @@ async function handleSubmitVerificationCode() {
     }
 
     try {
-        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/verify-email](https://piloto-jogo-backend.onrender.com/api/verify-email)', {
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/verify-email', {
             method: 'POST', // Agora é POST para enviar o código no corpo
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: registeredEmailForVerification, token: verificationCode })
@@ -323,7 +324,7 @@ async function handleResendVerificationCode() {
     }
 
     try {
-        const response = await fetch('[https://piloto-jogo-backend.onrender.com/api/resend-verification](https://piloto-jogo-backend.onrender.com/api/resend-verification)', {
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/resend-verification', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: registeredEmailForVerification })
@@ -344,7 +345,7 @@ async function handleResendVerificationCode() {
 async function updateCategoryButtons() {
     if (!loggedInUsername) return;
     try {
-        const response = await fetch(`https://piloto-jogo-backend.onrender.com/api/access/${loggedInUsername}`);
+        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/access/${loggedInUsername}'); // Remova a interpoleção desnecessária aqui
         if (!response.ok) throw new Error('Usuário não encontrado ou sem permissões.');
         const userAccess = await response.json();
         categoryButtons.forEach(button => {
