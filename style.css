@@ -150,13 +150,16 @@ button:active {
     width: 90%; /* Ocupa 90% da largura do pai */
     margin-top: 20px;
     
-    /* Propriedades para centralizar o grid de botões */
-    margin-left: auto;   /* Empurra para a direita */
-    margin-right: auto;  /* Empurra para a esquerda */
+    /* Propriedades para centralizar o próprio grid horizontalmente */
+    margin-left: auto;
+    margin-right: auto; 
     
     /* Centraliza os ITENS dentro das células do grid */
     justify-items: center; /* Centraliza os itens horizontalmente dentro de suas células de grid */
     align-items: center;   /* Centraliza os itens verticalmente dentro de suas células de grid (útil se as células forem maiores) */
+
+    /* NOVO: Tenta forçar a centralização do próprio item (category-buttons) se ele for um flex/grid item */
+    justify-self: center; /* Centraliza o item dentro do seu container flex/grid */
 }
 
 .category-btn {
