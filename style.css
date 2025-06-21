@@ -15,7 +15,7 @@ body, html {
 /* Documentação: Contêiner principal do jogo com efeito de vidro fosco */
 .game-container {
     /* EFEITO DE VIDRO FOSCO (BLUR) */
-    background-color: rgba(44, 62, 80, 0.65); /* Cor de fundo SEMI-TRANSPARENTE */
+    background-color: rgba(0, 0, 0, 0.10); /* Cor de fundo SEMI-TRANSPARENTE */
     backdrop-filter: blur(10px); /* O efeito de desfoque! */
     -webkit-backdrop-filter: blur(10px); /* Para compatibilidade com o navegador Safari */
 
@@ -681,4 +681,44 @@ body.theme-picante .game-container button {
 body.theme-picante .game-container #passChallengeBtn {
     color: #e67e22;
     border-color: #e67e22;
+}
+
+/* =================================================================
+   ESTILOS ESPECÍFICOS PARA O .game-container POR TEMA
+   ================================================================= */
+
+/* Documentação: Estilo customizado para o contêiner no tema HOT.
+   Adiciona um efeito de "neon" com borda e sombra vibrantes. */
+body.theme-hot .game-container {
+    border: 2px solid #ff0055; /* Uma borda rosa/vermelha vibrante */
+    box-shadow: 0 0 25px rgba(255, 0, 85, 0.6); /* Efeito de brilho (glow) */
+    background-color: rgb(0 0 0 / 10%);
+    border-radius: 35px; /* Deixa os cantos ainda mais arredondados */
+}
+
+/* Documentação: Estilo customizado para o contêiner no tema CONEXÃO.
+   Um visual mais suave e arredondado. */
+body.theme-conexao .game-container {
+    border: 1px solid rgba(52, 152, 219, 0.7); /* Borda azul um pouco mais forte */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Sombra padrão, menos intensa */
+    border-radius: 35px; /* Deixa os cantos ainda mais arredondados */
+    background-color: rgb(0 0 0 / 10%);
+}
+
+/* Documentação: Estilo customizado para o contêiner no tema AMIGOS.
+   Um visual mais "sólido" e divertido, com menos transparência. */
+body.theme-amigos .game-container {
+    border: 1px solid rgba(123, 255, 0, 0.7); /* Borda azul um pouco mais forte */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Sombra padrão, menos intensa */
+    border-radius: 35px; /* Deixa os cantos ainda mais arredondados */
+    background-color: rgb(0 0 0 / 10%);
+}
+
+/* Documentação: Estilo customizado para o contêiner no tema PICANTE.
+   Um visual mais "sólido" e divertido, com menos transparência. */
+body.theme-picante .game-container {
+    border: 1px solid rgba(157, 37, 204, 0.7); /* Borda azul um pouco mais forte */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Sombra padrão, menos intensa */
+    border-radius: 35px; /* Deixa os cantos ainda mais arredondados */
+    background-color: rgb(0 0 0 / 10%);
 }
