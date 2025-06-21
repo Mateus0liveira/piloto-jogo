@@ -12,12 +12,16 @@ body, html {
     text-align: center;
 }
 
-/* Documentação: Contêiner principal do jogo */
+/* Documentação: Contêiner principal do jogo com efeito de vidro fosco */
 .game-container {
-    background-color: #465a70;
+    /* EFEITO DE VIDRO FOSCO (BLUR) */
+    background-color: rgba(44, 62, 80, 0.65); /* Cor de fundo SEMI-TRANSPARENTE */
+    backdrop-filter: blur(10px); /* O efeito de desfoque! */
+    -webkit-backdrop-filter: blur(10px); /* Para compatibilidade com o navegador Safari */
+
     padding: 30px;
     border-radius: 25px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37); /* Sombra um pouco mais destacada */
     max-width: 420px;
     width: 90%;
     position: relative;
@@ -25,10 +29,10 @@ body, html {
     display: flex;
     flex-direction: column;
     
-    align-items: center; /* Centraliza horizontalmente os filhos do flex container */
-    justify-content: flex-start; /* Alinha os filhos ao início verticalmente (se column) */
+    align-items: center; 
+    justify-content: flex-start;
 
-    border: 2px solid #5e7a99;
+    border: 1px solid rgba(236, 240, 241, 0.2); /* Borda sutil e também semi-transparente */
     box-sizing: border-box;
     padding-bottom: 85px;
 }
