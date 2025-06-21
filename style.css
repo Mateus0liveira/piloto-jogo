@@ -197,10 +197,10 @@ button:active {
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px; /* Restaura o padding do texto */
-    box-sizing: border-box; /* Garante que o padding seja considerado no dimensionamento do span */
+    justify-content: center; /* Centraliza o texto horizontalmente */
+    align-items: center;     /* Centraliza o texto verticalmente */
+    /* REMOVIDO: padding: 10px; */ /* O padding aqui pode estar deslocando o texto. O padding do .category-btn já é suficiente. */
+    box-sizing: border-box; /* Garante que o padding (se fosse usado) seja considerado no dimensionamento do span */
 }
 
 
