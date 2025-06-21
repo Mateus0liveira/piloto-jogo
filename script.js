@@ -153,12 +153,15 @@ const BACKEND_BASE_URL = 'https://piloto-jogo-backend.onrender.com';
 // =================================================================
 
 function applyTheme(themeName) {
-    // Remove qualquer classe de tema anterior para evitar conflitos
-    gameContainer.classList.remove('theme-conexao', 'theme-amigos', 'theme-hot', 'theme-picante');
+    // Agora vamos aplicar o tema no corpo (body) da página inteira
+    const body = document.body;
 
-    // Se um nome de tema foi fornecido, adiciona a nova classe
+    // Remove qualquer classe de tema anterior para evitar conflitos
+    body.classList.remove('theme-conexao', 'theme-amigos', 'theme-hot', 'theme-picante');
+
+    // Se um nome de tema foi fornecido, adiciona a nova classe ao body
     if (themeName) {
-        gameContainer.classList.add(`theme-${themeName}`);
+        body.classList.add(`theme-${themeName}`);
     }
 }
 

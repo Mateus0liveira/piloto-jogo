@@ -525,109 +525,156 @@ button:active {
 
 
 /* =================================================================
-   ESTILOS DOS TEMAS POR CATEGORIA
+   ESTILOS PERSONALIZADOS PARA OS BOTÕES DE CATEGORIA
    ================================================================= */
 
-/* --- TEMA CONEXÃO (Azul) --- */
-.game-container.theme-conexao h1,
-.game-container.theme-conexao h2,
-.game-container.theme-conexao #winnerMessage,
-.game-container.theme-conexao .timer-display span,
-.game-container.theme-conexao .form-link a {
+/* Documentação: Estilo para a categoria 'Conexão'.
+   Usamos uma paleta de azul para transmitir calma e profundidade. */
+.category-btn[data-category="conexao"] {
+    background-color: #2980b9; /* Azul mais escuro */
+    border: 2px solid #3498db; /* Azul mais claro para a borda */
+}
+
+.category-btn[data-category="conexao"]:hover {
+    background-color: #3498db; /* Inverte as cores no hover */
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4); /* Sombra azulada */
+}
+
+/* Documentação: Estilo para a categoria 'Amigos'.
+   Usamos uma paleta de verde para um sentimento amigável e divertido. */
+.category-btn[data-category="amigos"] {
+    background-color: #27ae60; /* Verde escuro */
+    border: 2px solid #2ecc71; /* Verde claro para a borda */
+}
+
+.category-btn[data-category="amigos"]:hover {
+    background-color: #2ecc71;
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); /* Sombra esverdeada */
+}
+
+/* Documentação: Estilo para a categoria 'Hot'.
+   Usamos uma paleta de roxo para um visual mais intenso e provocante. */
+.category-btn[data-category="hot"] {
+    background-color: #8e44ad; /* Roxo escuro */
+    border: 2px solid #9b59b6; /* Roxo claro para a borda */
+}
+
+.category-btn[data-category="hot"]:hover {
+    background-color: #9b59b6;
+    box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4); /* Sombra arroxeada */
+}
+
+/* Documentação: Estilo para a categoria 'Picante'.
+   Usamos uma paleta de laranja/vermelho para uma sensação de energia e ousadia. */
+.category-btn[data-category="picante"] {
+    background-color: #d35400; /* Laranja escuro */
+    border: 2px solid #e67e22; /* Laranja claro para a borda */
+}
+
+.category-btn[data-category="picante"]:hover {
+    background-color: #e67e22;
+    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4); /* Sombra alaranjada */
+}
+
+
+/* =================================================================
+   ESTILOS GLOBAIS E IMAGENS DE FUNDO DOS TEMAS
+   ================================================================= */
+
+body {
+    /* Define o fundo padrão e uma transição suave para a troca de imagem */
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    transition: background-image 0.7s ease-in-out;
+}
+
+/* --- BACKGROUND E TEMA CONEXÃO (Azul) --- */
+body.theme-conexao {
+    background-image: url('images/background-conexao.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+body.theme-conexao .game-container h1,
+body.theme-conexao .game-container h2,
+body.theme-conexao .game-container #winnerMessage,
+body.theme-conexao .game-container .timer-display span {
     color: #3498db;
 }
-
-.game-container.theme-conexao .progress-bar-fill,
-.game-container.theme-conexao #completeChallengeBtn,
-.game-container.theme-conexao #loginBtn,
-.game-container.theme-conexao #registerBtn,
-.game-container.theme-conexao #playAgainBtn,
-.game-container.theme-conexao #startGameBtn {
+body.theme-conexao .game-container .progress-bar-fill,
+body.theme-conexao .game-container #completeChallengeBtn,
+body.theme-conexao .game-container button {
     background-color: #3498db;
 }
-
-.game-container.theme-conexao #passChallengeBtn {
+body.theme-conexao .game-container #passChallengeBtn {
     color: #3498db;
     border-color: #3498db;
 }
-.game-container.theme-conexao #passChallengeBtn:hover {
-    background-color: rgba(52, 152, 219, 0.1);
-}
 
-/* --- TEMA AMIGOS (Verde) --- */
-.game-container.theme-amigos h1,
-.game-container.theme-amigos h2,
-.game-container.theme-amigos #winnerMessage,
-.game-container.theme-amigos .timer-display span,
-.game-container.theme-amigos .form-link a {
+/* --- BACKGROUND E TEMA AMIGOS (Verde) --- */
+body.theme-amigos {
+    background-image: url('images/background-amigos.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+body.theme-amigos .game-container h1,
+body.theme-amigos .game-container h2,
+body.theme-amigos .game-container #winnerMessage,
+body.theme-amigos .game-container .timer-display span {
     color: #2ecc71;
 }
-
-.game-container.theme-amigos .progress-bar-fill,
-.game-container.theme-amigos #completeChallengeBtn,
-.game-container.theme-amigos #loginBtn,
-.game-container.theme-amigos #registerBtn,
-.game-container.theme-amigos #playAgainBtn,
-.game-container.theme-amigos #startGameBtn {
+body.theme-amigos .game-container .progress-bar-fill,
+body.theme-amigos .game-container #completeChallengeBtn,
+body.theme-amigos .game-container button {
     background-color: #2ecc71;
 }
-
-.game-container.theme-amigos #passChallengeBtn {
+body.theme-amigos .game-container #passChallengeBtn {
     color: #2ecc71;
     border-color: #2ecc71;
 }
-.game-container.theme-amigos #passChallengeBtn:hover {
-    background-color: rgba(46, 204, 113, 0.1);
-}
 
-/* --- TEMA HOT (Roxo) --- */
-.game-container.theme-hot h1,
-.game-container.theme-hot h2,
-.game-container.theme-hot #winnerMessage,
-.game-container.theme-hot .timer-display span,
-.game-container.theme-hot .form-link a {
+/* --- BACKGROUND E TEMA HOT (Roxo) --- */
+body.theme-hot {
+    background-image: url('images/background-hot.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+body.theme-hot .game-container h1,
+body.theme-hot .game-container h2,
+body.theme-hot .game-container #winnerMessage,
+body.theme-hot .game-container .timer-display span {
     color: #9b59b6;
 }
-
-.game-container.theme-hot .progress-bar-fill,
-.game-container.theme-hot #completeChallengeBtn,
-.game-container.theme-hot #loginBtn,
-.game-container.theme-hot #registerBtn,
-.game-container.theme-hot #playAgainBtn,
-.game-container.theme-hot #startGameBtn {
+body.theme-hot .game-container .progress-bar-fill,
+body.theme-hot .game-container #completeChallengeBtn,
+body.theme-hot .game-container button {
     background-color: #9b59b6;
 }
-
-.game-container.theme-hot #passChallengeBtn {
+body.theme-hot .game-container #passChallengeBtn {
     color: #9b59b6;
     border-color: #9b59b6;
 }
-.game-container.theme-hot #passChallengeBtn:hover {
-    background-color: rgba(155, 89, 182, 0.1);
-}
 
-/* --- TEMA PICANTE (Laranja) --- */
-.game-container.theme-picante h1,
-.game-container.theme-picante h2,
-.game-container.theme-picante #winnerMessage,
-.game-container.theme-picante .timer-display span,
-.game-container.theme-picante .form-link a {
+/* --- BACKGROUND E TEMA PICANTE (Laranja) --- */
+body.theme-picante {
+    background-image: url('images/background-picante.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+body.theme-picante .game-container h1,
+body.theme-picante .game-container h2,
+body.theme-picante .game-container #winnerMessage,
+body.theme-picante .game-container .timer-display span {
     color: #e67e22;
 }
-
-.game-container.theme-picante .progress-bar-fill,
-.game-container.theme-picante #completeChallengeBtn,
-.game-container.theme-picante #loginBtn,
-.game-container.theme-picante #registerBtn,
-.game-container.theme-picante #playAgainBtn,
-.game-container.theme-picante #startGameBtn {
+body.theme-picante .game-container .progress-bar-fill,
+body.theme-picante .game-container #completeChallengeBtn,
+body.theme-picante .game-container button {
     background-color: #e67e22;
 }
-
-.game-container.theme-picante #passChallengeBtn {
+body.theme-picante .game-container #passChallengeBtn {
     color: #e67e22;
     border-color: #e67e22;
-}
-.game-container.theme-picante #passChallengeBtn:hover {
-    background-color: rgba(230, 126, 34, 0.1);
 }
