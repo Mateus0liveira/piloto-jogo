@@ -525,59 +525,6 @@ button:active {
 
 
 /* =================================================================
-   ESTILOS PERSONALIZADOS PARA OS BOTÕES DE CATEGORIA
-   ================================================================= */
-
-/* Documentação: Estilo para a categoria 'Conexão'.
-   Usamos uma paleta de azul para transmitir calma e profundidade. */
-.category-btn[data-category="conexao"] {
-    background-color: #2980b9; /* Azul mais escuro */
-    border: 2px solid #3498db; /* Azul mais claro para a borda */
-}
-
-.category-btn[data-category="conexao"]:hover {
-    background-color: #3498db; /* Inverte as cores no hover */
-    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4); /* Sombra azulada */
-}
-
-/* Documentação: Estilo para a categoria 'Amigos'.
-   Usamos uma paleta de verde para um sentimento amigável e divertido. */
-.category-btn[data-category="amigos"] {
-    background-color: #27ae60; /* Verde escuro */
-    border: 2px solid #2ecc71; /* Verde claro para a borda */
-}
-
-.category-btn[data-category="amigos"]:hover {
-    background-color: #2ecc71;
-    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); /* Sombra esverdeada */
-}
-
-/* Documentação: Estilo para a categoria 'Hot'.
-   Usamos uma paleta de roxo para um visual mais intenso e provocante. */
-.category-btn[data-category="hot"] {
-    background-color: #8e44ad; /* Roxo escuro */
-    border: 2px solid #9b59b6; /* Roxo claro para a borda */
-}
-
-.category-btn[data-category="hot"]:hover {
-    background-color: #9b59b6;
-    box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4); /* Sombra arroxeada */
-}
-
-/* Documentação: Estilo para a categoria 'Picante'.
-   Usamos uma paleta de laranja/vermelho para uma sensação de energia e ousadia. */
-.category-btn[data-category="picante"] {
-    background-color: #d35400; /* Laranja escuro */
-    border: 2px solid #e67e22; /* Laranja claro para a borda */
-}
-
-.category-btn[data-category="picante"]:hover {
-    background-color: #e67e22;
-    box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4); /* Sombra alaranjada */
-}
-
-
-/* =================================================================
    ESTILOS DOS TEMAS POR CATEGORIA
    ================================================================= */
 
