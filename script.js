@@ -92,6 +92,8 @@ const registerBtn = document.getElementById('registerBtn');
 const showRegisterLink = document.getElementById('showRegisterLink');
 const showLoginLink = document.getElementById('showLoginLink');
 
+const gameContainer = document.querySelector('.game-container');
+
 const categorySelectionScreen = document.getElementById('categorySelectionScreen');
 const configScreen = document.getElementById('configScreen');
 const gameScreen = document.getElementById('gameScreen');
@@ -144,6 +146,21 @@ const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
 
 // NOVO: URL base do seu backend (ajuste para a sua URL real no Render)
 const BACKEND_BASE_URL = 'https://piloto-jogo-backend.onrender.com';
+
+
+// =================================================================
+// =================== FUNÇÃO PARA APLICAR TEMA ====================
+// =================================================================
+
+function applyTheme(themeName) {
+    // Remove qualquer classe de tema anterior para evitar conflitos
+    gameContainer.classList.remove('theme-conexao', 'theme-amigos', 'theme-hot', 'theme-picante');
+
+    // Se um nome de tema foi fornecido, adiciona a nova classe
+    if (themeName) {
+        gameContainer.classList.add(`theme-${themeName}`);
+    }
+}
 
 // =================================================================
 // =================== FUNÇÕES PRINCIPAIS ==========================
@@ -327,6 +344,10 @@ function selectCategory(event) {
     }
     selectedCategoryName = button.dataset.category;
     availableChallenges = [...DESAFIOS_CATEGORIAS[selectedCategoryName]];
+
+    // APLICA O TEMA DA CATEGORIA SELECIONADA
+    applyTheme(selectedCategoryName);
+
     showScreen('configScreen');
 }
 
@@ -549,18 +570,22 @@ categoryButtons.forEach(button => button.addEventListener('click', selectCategor
 startGameBtn.addEventListener('click', startGame);
 completeChallengeBtn.addEventListener('click', handleCompleteChallenge);
 passChallengeBtn.addEventListener('click', handlePassChallenge);
+// No botão "Jogar Novamente"
 playAgainBtn.addEventListener('click', () => {
-    activeCategoryFilter = null; // Limpa o filtro ao jogar novamente
+    activeCategoryFilter = null; 
+    applyTheme(null); // LIMPA O TEMA
     showScreen('categorySelectionScreen');
     updateCategoryButtons();
 });
 
 // --- FUNCIONALIDADES ATUALIZADAS PARA A BARRA DE NAVEGAÇÃO INFERIOR ---
 
+// No item de navegação "Início"
 navItemInicio.addEventListener('click', () => {
-    activeCategoryFilter = null; // Limpa qualquer filtro ativo
+    activeCategoryFilter = null;
+    applyTheme(null); // LIMPA O TEMA
     showScreen('categorySelectionScreen');
-    if (loggedInUsername) { // Adicionado: só atualiza botões se logado
+    if (loggedInUsername) {
         updateCategoryButtons();
     }
 });
