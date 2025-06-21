@@ -5,7 +5,7 @@
 console.log("script.js carregado!"); // Adicionado para depuração
 
 let loggedInUsername = null; // Armazena o usuário que fez login
-let registeredEmailForVerification = null; // Armazena o e-mail recém-registrado para verificação
+let registeredEmailForVerification = null; // REMOVIDO: Não necessário nesta versão
 
 // Variáveis do Jogo
 let player1Name = "";
@@ -98,13 +98,13 @@ const gameScreen = document.getElementById('gameScreen');
 const resultScreen = document.getElementById('resultScreen');
 const confirmLogoutScreen = document.getElementById('confirmLogoutScreen');
 
-// Novas referências para a tela de verificação
-const verifyAccountScreen = document.getElementById('verifyAccountScreen');
-const verificationEmailDisplay = document.getElementById('verificationEmailDisplay');
-const verificationCodeInput = document.getElementById('verificationCode');
-const submitVerificationCodeBtn = document.getElementById('submitVerificationCodeBtn');
-const resendVerificationCodeLink = document.getElementById('resendVerificationCodeLink');
-const backToLoginFromVerify = document.getElementById('backToLoginFromVerify');
+// REMOVIDAS as referências para a tela de verificação
+// const verifyAccountScreen = document.getElementById('verifyAccountScreen');
+// const verificationEmailDisplay = document.getElementById('verificationEmailDisplay');
+// const verificationCodeInput = document.getElementById('verificationCode');
+// const submitVerificationCodeBtn = document.getElementById('submitVerificationCodeBtn');
+// const resendVerificationCodeLink = document.getElementById('resendVerificationCodeLink');
+// const backToLoginFromVerify = document.getElementById('backToLoginFromVerify');
 
 
 const categoryButtons = document.querySelectorAll('.category-btn');
@@ -142,6 +142,9 @@ const navItemSair = document.getElementById('navItemSair');
 const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
 const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
 
+// NOVO: URL base do seu backend (ajuste para a sua URL real no Render)
+const BACKEND_BASE_URL = 'https://piloto-jogo-backend.onrender.com';
+
 // =================================================================
 // =================== FUNÇÕES PRINCIPAIS ==========================
 // =================================================================
@@ -155,7 +158,7 @@ function showScreen(screenId) {
     currentScreenId = screenId; // Atualiza a tela atual no estado global
 
     // Definir quais telas não exigem login
-    const publicScreens = ['loginScreen', 'registerScreen', 'verifyAccountScreen', 'confirmLogoutScreen'];
+    const publicScreens = ['loginScreen', 'registerScreen', 'confirmLogoutScreen']; // 'verifyAccountScreen' REMOVIDA
 
     // Se o usuário não está logado e a tela não é pública, redirecionar para o login
     if (!loggedInUsername && !publicScreens.includes(screenId)) {
@@ -204,10 +207,7 @@ function showScreen(screenId) {
         categoryButtons.forEach(button => button.classList.remove('hidden'));
     }
 
-    // Atualiza o e-mail na tela de verificação, se for o caso
-    if (screenId === 'verifyAccountScreen' && registeredEmailForVerification) {
-        verificationEmailDisplay.textContent = registeredEmailForVerification;
-    }
+    // REMOVIDO: Lógica para atualizar o e-mail na tela de verificação, pois a tela foi removida.
 }
 
 // Função para aplicar o filtro visual nos botões de categoria
@@ -233,7 +233,8 @@ async function handleLogin() {
         return;
     }
     try {
-        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/login', {
+        // Usa a constante BACKEND_BASE_URL
+        const response = await fetch(`${BACKEND_BASE_URL}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -248,7 +249,7 @@ async function handleLogin() {
             alert(`Erro: ${result.error}`);
         }
     } catch (error) {
-        alert("Não foi possível conectar ao servidor.");
+        alert("Não foi possível conectar ao servidor. Verifique se ele está rodando.");
     }
 }
 
@@ -260,17 +261,16 @@ async function handleRegister() {
         return;
     }
     try {
-        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/register', {
+        // Usa a constante BACKEND_BASE_URL
+        const response = await fetch(`${BACKEND_BASE_URL}/api/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
         });
         const result = await response.json();
         if (response.ok) {
-            // Se o registro foi bem-sucedido, armazena o e-mail e vai para a tela de verificação
-            registeredEmailForVerification = username;
-            alert("Conta criada com sucesso! Por favor, verifique seu e-mail para ativar sua conta."); // Mensagem atualizada
-            showScreen('verifyAccountScreen'); // Redireciona para a tela de verificação
+            alert("Conta criada com sucesso! Você já pode fazer login."); // Mensagem revertida
+            showScreen('loginScreen'); // Redireciona para login
         } else {
             // Se o backend retornou erros de validação
             if (result.errors && Array.isArray(result.errors)) {
@@ -287,65 +287,15 @@ async function handleRegister() {
     }
 }
 
-// NOVA FUNÇÃO: Envia o código de verificação para o backend
-async function handleSubmitVerificationCode() {
-    const verificationCode = verificationCodeInput.value.trim();
-    if (!registeredEmailForVerification || !verificationCode) {
-        alert("Por favor, digite o código e tente novamente.");
-        return;
-    }
-
-    try {
-        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/verify-email', {
-            method: 'POST', // Agora é POST para enviar o código no corpo
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: registeredEmailForVerification, token: verificationCode })
-        });
-        const result = await response.json();
-        if (response.ok) {
-            alert("Conta verificada com sucesso! Você já pode fazer login.");
-            registeredEmailForVerification = null; // Limpa o e-mail após verificação
-            showScreen('loginScreen');
-        } else {
-            alert(`Erro na verificação: ${result.error || 'Código inválido ou expirado.'}`);
-        }
-    } catch (error) {
-        alert("Não foi possível verificar a conta. Tente novamente mais tarde.");
-        console.error("Erro ao enviar código de verificação:", error);
-    }
-}
-
-// NOVA FUNÇÃO: Reenvia o código de verificação
-async function handleResendVerificationCode() {
-    if (!registeredEmailForVerification) {
-        alert("Nenhum e-mail registrado para reenviar código. Por favor, registre-se primeiro.");
-        showScreen('registerScreen');
-        return;
-    }
-
-    try {
-        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/resend-verification', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: registeredEmailForVerification })
-        });
-        const result = await response.json();
-        if (response.ok) {
-            alert("Um novo código de verificação foi enviado para seu e-mail.");
-        } else {
-            alert(`Erro ao reenviar código: ${result.error || 'Não foi possível reenviar o código.'}`);
-        }
-    } catch (error) {
-        alert("Não foi possível conectar ao servidor para reenviar o código.");
-        console.error("Erro ao reenviar código de verificação:", error);
-    }
-}
+// REMOVIDA: Funções handleSubmitVerificationCode e handleResendVerificationCode
+// REMOVIDO: Event listeners para a tela de verificação
 
 
 async function updateCategoryButtons() {
     if (!loggedInUsername) return;
     try {
-        const response = await fetch('https://piloto-jogo-backend.onrender.com/api/access/${loggedInUsername}'); // Remova a interpoleção desnecessária aqui
+        // Usa a constante BACKEND_BASE_URL
+        const response = await fetch(`${BACKEND_BASE_URL}/api/access/${loggedInUsername}`);
         if (!response.ok) throw new Error('Usuário não encontrado ou sem permissões.');
         const userAccess = await response.json();
         categoryButtons.forEach(button => {
@@ -664,17 +614,6 @@ cancelLogoutBtn.addEventListener('click', () => {
     }
 });
 
-// EVENT LISTENERS para a nova tela de verificação
-submitVerificationCodeBtn.addEventListener('click', handleSubmitVerificationCode);
-resendVerificationCodeLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    handleResendVerificationCode();
-});
-backToLoginFromVerify.addEventListener('click', (e) => {
-    e.preventDefault();
-    registeredEmailForVerification = null; // Limpa o e-mail em memória
-    showScreen('loginScreen');
-});
 
 document.addEventListener('DOMContentLoaded', () => {
     // Primeiro tenta carregar o usuário logado
