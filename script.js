@@ -143,7 +143,7 @@ const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
 const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
 
 // NOVO: URL base do seu backend (ajuste para a sua URL real no Render)
-const BACKEND_BASE_URL = 'https://piloto-jogo-backend.onrender.com/';
+const BACKEND_BASE_URL = 'https://piloto-jogo-backend.onrender.com';
 
 // =================================================================
 // =================== FUNÇÕES PRINCIPAIS ==========================
@@ -234,7 +234,7 @@ async function handleLogin() {
     }
     try {
         // Usa a constante BACKEND_BASE_URL
-        const response = await fetch(`${BACKEND_BASE_URL}/api/login`, {
+        const response = await fetch(`${BACKEND_BASE_URL}api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
