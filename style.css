@@ -419,12 +419,12 @@ button:active {
     transform: translateX(-50%);
     max-width: 420px;
     width: 100%;
-    background-color: rgba(44, 62, 80, 0.8);
+    background-color: rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
-    border-top: 1px solid rgba(236, 240, 241, 0.2);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
     height: 65px;
     box-sizing: border-box;
     z-index: 1000;
