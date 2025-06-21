@@ -24,7 +24,11 @@ body, html {
     min-height: calc(100vh - 60px);
     display: flex;
     flex-direction: column;
-    align-items: center;
+    
+    align-items: center; /* Mantido para alinhar itens como h1, input-group no centro horizontal */
+    justify-content: flex-start; /* Ou space-between, ou center - dependendo do desejo de layout vertical */
+
+
     border: 2px solid #5e7a99;
     box-sizing: border-box;
     padding-bottom: 85px;
@@ -143,12 +147,16 @@ button:active {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    width: 90%;
+    width: 90%; /* Ocupa 90% da largura do pai */
     margin-top: 20px;
     
-    /* NOVO: Propriedades para centralizar o grid de botões */
+    /* Propriedades para centralizar o grid de botões */
     margin-left: auto;   /* Empurra para a direita */
     margin-right: auto;  /* Empurra para a esquerda */
+    
+    /* Centraliza os ITENS dentro das células do grid */
+    justify-items: center; /* Centraliza os itens horizontalmente dentro de suas células de grid */
+    align-items: center;   /* Centraliza os itens verticalmente dentro de suas células de grid (útil se as células forem maiores) */
 }
 
 .category-btn {
