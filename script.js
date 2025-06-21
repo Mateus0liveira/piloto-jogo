@@ -143,7 +143,7 @@ const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
 const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
 
 // NOVO: URL base do seu backend (ajuste para a sua URL real no Render)
-const BACKEND_BASE_URL = 'https://piloto-jogo-backend.onrender.com';
+const BACKEND_BASE_URL = 'https://piloto-jogo-backend.onrender.com/';
 
 // =================================================================
 // =================== FUNÇÕES PRINCIPAIS ==========================
