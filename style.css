@@ -25,9 +25,8 @@ body, html {
     display: flex;
     flex-direction: column;
     
-    align-items: center; /* Mantido para alinhar itens como h1, input-group no centro horizontal */
-    justify-content: flex-start; /* Ou space-between, ou center - dependendo do desejo de layout vertical */
-
+    align-items: center; /* Centraliza horizontalmente os filhos do flex container */
+    justify-content: flex-start; /* Alinha os filhos ao início verticalmente (se column) */
 
     border: 2px solid #5e7a99;
     box-sizing: border-box;
@@ -145,21 +144,26 @@ button:active {
 /* Grid de categorias */
 .category-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    width: 90%; /* Ocupa 90% da largura do pai */
-    margin-top: 20px;
+    /* NOVO: Define colunas fixas com calculo para garantir espaço e largura uniforme */
+    /* Duas colunas, cada uma ocupando metade do espaço disponível menos o gap */
+    /* Usamos calc() para considerar o gap e vw para ser responsivo */
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* minmax(0, 1fr) permite que a coluna se encolha se precisar, mas tente 1fr */
+    gap: 10px; /* Mantém o espaçamento entre os itens */
     
-    /* Propriedades para centralizar o próprio grid horizontalmente */
-    margin-left: auto;
-    margin-right: auto; 
+    /* NOVO: Ajusta a largura para ser 100% do pai e centraliza o conteúdo do grid */
+    width: 100%; /* Garante que o grid container ocupe toda a largura disponível */
+    max-width: 380px; /* Limite a largura máxima do grid para que ele não fique muito grande em telas largas, mantendo a proporção dos botões. 420px é o max-width do game-container, 90% dele seria 378px. 380px é um bom valor. */
     
-    /* Centraliza os ITENS dentro das células do grid */
-    justify-items: center; /* Centraliza os itens horizontalmente dentro de suas células de grid */
-    align-items: center;   /* Centraliza os itens verticalmente dentro de suas células de grid (útil se as células forem maiores) */
+    /* NOVO: Centraliza o próprio grid dentro do .game-container (que é um flex container com align-items:center) */
+    margin: 20px auto 0 auto; /* Margin-top de 20px, e auto para centralizar horizontalmente */
 
-    /* NOVO: Tenta forçar a centralização do próprio item (category-buttons) se ele for um flex/grid item */
-    justify-self: center; /* Centraliza o item dentro do seu container flex/grid */
+    /* NOVO: Centraliza o conteúdo dentro do GRID */
+    justify-content: center; /* Centraliza as faixas do grid (as colunas/botões) */
+    align-content: center;   /* Centraliza as faixas do grid verticalmente (se houver mais espaço) */
+    justify-items: center;   /* Centraliza os itens horizontalmente dentro de suas células */
+    align-items: center;     /* Centraliza os itens verticalmente dentro de suas células */
+
+    /* REMOVIDO: justify-self: center; // Não é necessário com justify-content/items no container */
 }
 
 .category-btn {
@@ -170,14 +174,35 @@ button:active {
     font-weight: 700;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-    aspect-ratio: 1 / 1;
+    
+    /* NOVO: Garante o aspecto quadrado e preenchimento da célula */
+    width: 100%; /* Ocupa 100% da largura da célula do grid */
+    padding-top: 100%; /* Truque CSS para criar um quadrado (padding-top igual à width) */
+    height: 0; /* Zera a altura para o padding-top definir a altura */
+    position: relative; /* Para posicionar o conteúdo */
+
     border: none;
-    padding: 10px;
+    display: flex; /* Para centralizar o texto */
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Redundante mas não prejudica */
+    box-sizing: border-box; /* Inclui padding e border na largura/altura */
+}
+
+/* NOVO: Estilo para o conteúdo (texto) dentro do botão, para ele não ser afetado pelo padding-top */
+.category-btn span {
+    position: absolute; /* Posiciona o texto absolutamente dentro do botão */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    padding: 10px; /* Restaura o padding do texto */
+    box-sizing: border-box; /* Garante que o padding seja considerado no dimensionamento do span */
 }
+
 
 .category-btn:hover {
     background-color: #465a70;
