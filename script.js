@@ -234,7 +234,7 @@ async function handleLogin() {
     }
     try {
         // Usa a constante BACKEND_BASE_URL
-        const response = await fetch(`${BACKEND_BASE_URL}api/login`, {
+        const response = await fetch(`${BACKEND_BASE_URL}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
