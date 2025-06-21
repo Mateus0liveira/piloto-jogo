@@ -145,6 +145,10 @@ button:active {
     gap: 10px;
     width: 90%;
     margin-top: 20px;
+    
+    /* NOVO: Propriedades para centralizar o grid de botões */
+    margin-left: auto;   /* Empurra para a direita */
+    margin-right: auto;  /* Empurra para a esquerda */
 }
 
 .category-btn {
